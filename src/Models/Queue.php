@@ -4,7 +4,7 @@ namespace Sinevia\Models\Tasks;
 
 class Queue extends \App\Models\BaseModel {
 
-    protected $table = 'snv_tasks_task';
+    protected $table = 'snv_tasks_queue';
     protected $primaryKey = 'Id';
     public static $statusList = [
         'Queued' => 'Queued',
@@ -15,7 +15,12 @@ class Queue extends \App\Models\BaseModel {
         'Deleted' => 'Deleted',
     ];
 
-    const TYPE_UPDATE_PREFIX_PRICING = 'UpdatePrefixPricing';
+    const STATUS_QUEUED = 'Queued';
+    const STATUS_PROCESSING = 'Processing';
+    const STATUS_COMPLETED = 'Completed';
+    const STATUS_FAILED = 'Failed';
+    const STATUS_PAUSED = 'Paused';
+    const STATUS_DELETED = 'Deleted';
 
     public function appendDetails($message) {
         if (is_array($message) OR is_object($message)) {
@@ -131,31 +136,31 @@ class Queue extends \App\Models\BaseModel {
         $this->save();
     }
 
-    public static function process($type, $parameters = [], $linkedIds = []) {
-        $task = new self;
-        $task->Id = \Sinevia\Uid::microUid();
-        $task->Type = $type;
-        $task->Status = 'Processing';
-        $task->Parameters = json_encode($parameters);
-        $task->LinkedIds = json_encode($linkedIds);
-        $task->Attempts = 0;
-        $task->StartedAt = date('Y-m-d H:i:s');
-        $task->Details = $task->Id . '.task.log.txt';
-        $task->save();
-        return $task;
+    public static function process($taskId, $parameters = [], $linkedIds = []) {
+        $queuedTask = new self;
+        $queuedTask->Id = \Sinevia\Uid::microUid();
+        $queuedTask->TaskId = $type;
+        $queuedTask->Status = self::STATUS_PROCESSING;
+        $queuedTask->Parameters = json_encode($parameters);
+        $queuedTask->LinkedIds = json_encode($linkedIds);
+        $queuedTask->Attempts = 0;
+        $queuedTask->StartedAt = date('Y-m-d H:i:s');
+        $queuedTask->Details = $task->Id . '.task.log.txt';
+        $queuedTask->save();
+        return $queuedTask;
     }
 
-    public static function queue($type, $parameters = [], $linkedIds = []) {
-        $task = new self;
-        $task->Id = \Sinevia\Uid::microUid();
-        $task->Type = $type;
-        $task->Status = 'Queued';
-        $task->Parameters = json_encode($parameters);
-        $task->LinkedIds = json_encode($linkedIds);
-        $task->Attempts = 0;
-        $task->Details = $task->Id . '.task.log.txt';
-        $task->save();
-        return $task;
+    public static function queue($taskId, $parameters = [], $linkedIds = []) {
+        $queuedTask = new self;
+        $queuedTask->Id = \Sinevia\Uid::microUid();
+        $queuedTask->TaskId = $type;
+        $queuedTask->Status = self::STATUS_QUEUED;
+        $queuedTask->Parameters = json_encode($parameters);
+        $queuedTask->LinkedIds = json_encode($linkedIds);
+        $queuedTask->Attempts = 0;
+        $queuedTask->Details = $task->Id . '.task.log.txt';
+        $queuedTask->save();
+        return $queuedTask;
     }
 
     public static function tableCreate() {
@@ -166,18 +171,19 @@ class Queue extends \App\Models\BaseModel {
             return \Schema::connection($o->connection)->create($o->table, function (\Illuminate\Database\Schema\Blueprint $table) use ($o, $statusKeys) {
                         $table->engine = 'InnoDB';
                         $table->string($o->primaryKey, 40)->primary();
-                        $table->enum('Status', $statusKeys)->default('Queued');
-                        $table->string('Type', 50);
+                        $table->enum('Status', $statusKeys)->default(self::STATUS_QUEUED);
+                        $table->string('TaskId', 40);
+                        $table->string('TaskAlias', 50);
                         $table->string('LinkedIds', 255)->default('');
                         $table->text('Parameters')->nullable();
                         $table->text('Output')->nullable();
                         $table->text('Details')->nullable();
                         $table->integer('Attempts')->default(0);
-                        $table->datetime('StartedAt')->nullable();
-                        $table->datetime('CompletedAt')->nullable();
-                        $table->datetime('CreatedAt')->nullable();
-                        $table->datetime('UpdatedAt')->nullable();
-                        $table->datetime('DeletedAt')->nullable();
+                        $table->datetime('StartedAt')->nullable()->default(NULL);
+                        $table->datetime('CompletedAt')->nullable()->default(NULL);
+                        $table->datetime('CreatedAt')->nullable()->default(NULL);
+                        $table->datetime('UpdatedAt')->nullable()->default(NULL);
+                        $table->datetime('DeletedAt')->nullable()->default(NULL);
                         $table->index(['Status', 'Type']);
                     });
         }
