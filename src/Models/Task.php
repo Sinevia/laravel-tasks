@@ -2,10 +2,6 @@
 
 namespace Sinevia\Tasks;
 
-<?php
-
-namespace App\Models\Tasks;
-
 class Task extends BaseModel {
 
     protected $table = 'snv_tasks_task';
