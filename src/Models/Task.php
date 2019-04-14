@@ -1,6 +1,6 @@
 <?php
 
-namespace Sinevia\Tasks;
+namespace Sinevia\Tasks\Models;
 
 class Task extends BaseModel {
 
