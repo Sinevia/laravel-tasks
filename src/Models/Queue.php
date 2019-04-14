@@ -1,8 +1,8 @@
 <?php
 
-namespace Sinevia\Models\Tasks;
+namespace Sinevia\Tasks\Models;
 
-class Queue extends \App\Models\BaseModel {
+class Queue extends BaseModel {
 
     protected $table = 'snv_tasks_queue';
     protected $primaryKey = 'Id';
