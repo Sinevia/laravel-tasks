@@ -1,6 +1,6 @@
 <?php
 
-namespace Sinevia\Shop\Models;
+namespace Sinevia\Tasks\Models;
 
 class BaseModel extends \AdvancedModel {
     public $timestamps = true;
