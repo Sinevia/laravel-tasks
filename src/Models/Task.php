@@ -15,17 +15,21 @@ class Task extends BaseModel {
     const STATUS_DISABLED = 'Disabled';
   
     public static function queue($type, $parameters = [], $linkedIds = []) {
-        $queuedTas = new Queue;
-        $queuedItem->Id = \Sinevia\Uid::microUid();
-        $queuedItem->TaskId = $this->Id;
-        $queuedItem->TaskAlias = $this->Alias;
-        $queuedItem->Status = 'Queued';
-        $queuedItem->Parameters = json_encode($parameters);
-        $queue->LinkedIds = json_encode($linkedIds);
-        $queue->Attempts = 0;
-        $queue->Details = $task->Id . '.task.log.txt';
-        $queue->save();
-        return $queue;
+        $task = Task::where('type',$type)->first();
+        $id = \Sinevia\Uid::microUid();
+        
+        $queuedTask = new Queue;
+        $queuedTask->Id = $id;
+        $queuedTask->TaskId = is_null($task) ? '' : $task->Id;
+        $queuedTask->Type = $type;
+        $queuedTask->Status = 'Queued';
+        $queuedTask->Parameters = json_encode($parameters);
+        $queuedTask->LinkedIds = json_encode($linkedIds);
+        $queuedTask->Attempts = 0;
+        $queuedTask->Details = $id . '.task.log.txt';
+        $queuedTask->save();
+        
+        return $queuedTask;
     }
 
     public static function tableCreate() {
