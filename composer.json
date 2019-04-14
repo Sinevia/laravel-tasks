@@ -43,7 +43,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Sinevia\\Tasks\\TaskServiceProvider"
+                "Sinevia\\Tasks\\TasksServiceProvider"
             ],
             "aliases": {
                 "Business": "Sinevia\\Tasks\\Facade"
