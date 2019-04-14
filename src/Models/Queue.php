@@ -173,7 +173,7 @@ class Queue extends BaseModel {
                         $table->string($o->primaryKey, 40)->primary();
                         $table->enum('Status', $statusKeys)->default(self::STATUS_QUEUED);
                         $table->string('TaskId', 40);
-                        $table->string('TaskAlias', 50);
+                        $table->string('Type', 50);
                         $table->string('LinkedIds', 255)->default('');
                         $table->text('Parameters')->nullable();
                         $table->text('Output')->nullable();
@@ -184,7 +184,7 @@ class Queue extends BaseModel {
                         $table->datetime('CreatedAt')->nullable()->default(NULL);
                         $table->datetime('UpdatedAt')->nullable()->default(NULL);
                         $table->datetime('DeletedAt')->nullable()->default(NULL);
-                        $table->index(['Status', 'Type']);
+                        // $table->index(['Status', 'Type']);
                     });
         }
 
