@@ -15,9 +15,9 @@ class TasksServiceProvider extends ServiceProvider {
         $this->publishes([
             dirname(__DIR__) . '/config/tasks.php' => config_path('tasks.php'),
         ]);
-        $this->loadMigrationsFrom(dirname(__DIR__) . '/database/migrations'),
-        // $this->loadViewsFrom(dirname(__DIR__) . '/resources/views', 'tasks'),
-        // $this->loadRoutesFrom(dirname(__DIR__).'/routes.php'),            
+        $this->loadMigrationsFrom(dirname(__DIR__) . '/database/migrations');
+        // $this->loadViewsFrom(dirname(__DIR__) . '/resources/views', 'tasks');
+        // $this->loadRoutesFrom(dirname(__DIR__).'/routes.php');
     }
 
     /**
