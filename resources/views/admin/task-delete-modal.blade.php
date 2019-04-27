@@ -1,14 +1,14 @@
-<!-- START: Task Requeue Dialog -->
+<!-- START: Task Queue Task Delete Dialog -->
 <style>
-    #ModalTaskDelete sup{
+    #ModalQueueTaskDelete sup{
         font-size:11px;
     }
-    #ModalTaskDelete .modal-footer{
+    #ModalQueueTaskDelete .modal-footer{
         display: table;
         width:100%;
     }
 </style>
-<div id="ModalTaskDelete" class="modal fade" style="display:none;">
+<div id="ModalQueueTaskDelete" class="modal fade" style="display:none;">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -26,10 +26,12 @@
             </div>
             <div class="modal-footer">
                 <a id="modal-close" href="#" class="btn btn-info float-left" data-dismiss="modal">
+                    <i class="fas fa-chevron-left"></i>
                     Cancel
                 </a>
-                <a id="modal-close" href="#" class="btn btn-success float-left" data-dismiss="modal" onclick="taskDelete();">
-                    Continue
+                <a id="modal-close" href="#" class="btn btn-danger float-right" data-dismiss="modal" onclick="queueTaskDelete();">
+                    <i class="fas fa-minus-circle"></i>
+                    Delete
                 </a>
             </div>
         </div>
@@ -38,15 +40,15 @@
 
 <script>
     
-    function showTaskDeketeModal(taskId) {
-        $('#ModalTaskDelete input[name=QueuedTaskId]').val(taskId);
-        $('#ModalTaskDelete').modal('show');
+    function showQueueTaskDeketeModal(taskId) {
+        $('#ModalQueueTaskDelete input[name=QueuedTaskId]').val(taskId);
+        $('#ModalQueueTaskDelete').modal('show');
     }
     
-    function taskDelete() {
-        var taskId = $('#ModalTaskDelete input[name=QueuedTaskId]').val();
+    function queueTaskDelete() {
+        var taskId = $('#ModalQueueTaskDelete input[name=QueuedTaskId]').val();
         
-        var url = '<?php echo action('\Sinevia\Tasks\Http\Controllers\TasksController@anyTaskDeleteAjax'); ?>?QueuedTaskId=' + taskId;
+        var url = '<?php echo action('\Sinevia\Tasks\Http\Controllers\TasksController@anyQueueTaskDeleteAjax'); ?>?QueuedTaskId=' + taskId;
         $.ajax({// ajax call starts
             url: url,
             data: {QueuedTaskId: taskId, _token: "<?php echo csrf_token(); ?>"},
@@ -54,18 +56,18 @@
         }).done(function (response) {
             // DEBUG: console.log(response)
             if (response.status === 'success') {
-                $('#ModalTaskDelete').modal('hide');
+                $('#ModalQueueTaskDelete').modal('hide');
                 window.location.href = window.location.href;
             } else {
                 alert(response.message);
-                $('#ModalTaskDelete').modal('hide');
+                $('#ModalQueueTaskDelete').modal('hide');
                 window.location.href = window.location.href;
             }
         }).fail(function () {
             alert('Getting details failed');
-            $('#ModalTaskDelete').modal('hide');
+            $('#ModalQueueTaskDelete').modal('hide');
         });
         
     }
 </script>
-<!-- END: Task Requeue Dialog -->
+<!-- END: Task Queue Task Delete Dialog -->
