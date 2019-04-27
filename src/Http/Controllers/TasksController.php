@@ -30,11 +30,22 @@ class TasksController extends \Illuminate\Routing\Controller {
         if ($filterStatus == 'Deleted') {
             $view = 'trash';
         }
-        
+
         $query = \Sinevia\Tasks\Models\Queue::getModel();
         $queuedTasks = $query->paginate(20);
 
         return view('tasks::admin/task-manager', get_defined_vars());
+    }
+
+    function anyTaskDetails() {
+        $queuedTaskId = request('QueuedTaskId');
+        $queuedTask = \Sinevia\Tasks\Models\Queue::find($queuedTaskId);
+
+        if (is_null($queuedTask)) {
+            return json_encode(['status' => 'error', 'message' => 'Task not found']);
+        }
+
+        return json_encode(['status' => 'success', 'message' => 'Task found', 'data' => ['Details' => $queuedTask->Details]]);
     }
 
 }
