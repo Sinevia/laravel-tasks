@@ -26,9 +26,11 @@
             </div>
             <div class="modal-footer">
                 <a id="modal-close" href="#" class="btn btn-info float-left" data-dismiss="modal">
+                    <i class="fas fa-chevron-left"></i>
                     Cancel
                 </a>
-                <a id="modal-close" href="#" class="btn btn-success float-left" data-dismiss="modal" onclick="taskRequeue();">
+                <a id="modal-close" href="#" class="btn btn-success float-right" data-dismiss="modal" onclick="taskRequeue();">
+                    <i class="fas fa-check-circle"></i>
                     Continue
                 </a>
             </div>
