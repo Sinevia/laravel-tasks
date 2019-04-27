@@ -22,6 +22,7 @@
 
 @include('tasks::admin.shared-navigation')
 @include('tasks::admin.task-details-modal')
+@include('tasks::admin.task-requeue-modal')
 
 <div class="box box-primary">
     <div class="box-header with-border">
@@ -152,10 +153,10 @@
                             <span class="glyphicon glyphicon-eye-open"></span>
                             Details
                         </button>
-                        <a href="<?php echo \Sinevia\Tasks\Helpers\Links::adminHome(['PageId' => $qt->Id]); ?>" class="btn btn-sm btn-warning">
-                            <span class="glyphicon glyphicon-edit"></span>
-                            Edit
-                        </a>
+                        <button class="btn btn-sm btn-success" onclick="showTaskRequeueModal('<?php echo $qt->Id; ?>');">
+                            <span class="fa fa-queue"></span>
+                            Requeue
+                        </button>
                         <?php if ($qt->Status == 'Deleted') { ?>
                             <button class="btn btn-sm btn-danger" onclick="confirmPageDelete('<?php echo $qt->Id; ?>');">
                                 <span class="glyphicon glyphicon-remove-sign"></span>
