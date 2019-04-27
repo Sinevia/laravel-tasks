@@ -37,6 +37,23 @@ class TasksController extends \Illuminate\Routing\Controller {
 
         return view('tasks::admin/task-manager', get_defined_vars());
     }
+    
+    function anyQueueTaskDeleteAjax() {
+        $queuedTaskId = request('QueuedTaskId');
+        $queuedTask = \Sinevia\Tasks\Models\Queue::find($queuedTaskId);
+
+        if (is_null($queuedTask)) {
+            return json_encode(['status' => 'error', 'message' => 'Queued task not found']);
+        }
+
+        $isSuccess = $queuedTask->delete();
+
+        if ($isSuccess) {
+            return json_encode(['status' => 'success', 'message' => 'Queued task deleted']);
+        }
+
+        return json_encode(['status' => 'error', 'message' => 'Queued task faied to be deleted']);
+    }
 
     function anyTaskDetails() {
         $queuedTaskId = request('QueuedTaskId');
