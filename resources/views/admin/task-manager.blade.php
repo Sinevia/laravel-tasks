@@ -22,8 +22,8 @@
 
 @include('tasks::admin.shared-navigation')
 @include('tasks::admin.queue-task-delete-modal')
-@include('tasks::admin.task-details-modal')
-@include('tasks::admin.task-requeue-modal')
+@include('tasks::admin.queue-task-details-modal')
+@include('tasks::admin.queue-task-requeue-modal')
 
 <div class="box box-primary">
     <div class="box-header with-border">
