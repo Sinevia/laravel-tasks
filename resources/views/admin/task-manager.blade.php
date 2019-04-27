@@ -98,7 +98,8 @@
 
             <?php foreach ($queuedTasks as $qt) { ?>
                 <?php
-                $createdAtTime = trim($qt->StartedAt);
+                $taskName = is_null($qt->task) ? 'n/a' : $qt->task->Title;
+                $createdAtTime = trim($qt->CreatedAt);
                 $startedAtTime = trim($qt->StartedAt);
                 $completedAtTime = trim($qt->CompletedAt);
                 $elapsedTime = 'n/a';
@@ -124,7 +125,7 @@
                 <tr>
                     <td>
                         <div style="color:#333;font-size: 14px;font-weight:bold;">
-                            <?php echo $qt->Type; ?>
+                            <?php echo $taskName; ?>
                         </div>                        
                         <div style="color:#333;font-size: 12px;font-style:italic;">
                             <?php echo $qt->Alias; ?>
