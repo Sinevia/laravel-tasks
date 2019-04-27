@@ -166,7 +166,6 @@
                         <?php if ($qt->Status != 'Deleted') { ?>
                             <button class="btn btn-sm btn-danger" onclick="showQueueTaskDeketeModal('<?php echo $qt->Id; ?>');" title="Trash">
                                 <i class="fas fa-trash"></i>
-                                Trash
                             </button>
                         <?php } ?>
                     </td>
