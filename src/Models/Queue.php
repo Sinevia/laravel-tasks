@@ -150,6 +150,9 @@ class Queue extends BaseModel {
         return $queuedTask;
     }
 
+    /**
+     * Queues a task by ID and returns the queued instance
+     */
     public static function queue($taskId, $parameters = [], $linkedIds = []) {
         $queuedTask = new self;
         $queuedTask->Id = \Sinevia\Uid::microUid();
@@ -158,8 +161,12 @@ class Queue extends BaseModel {
         $queuedTask->Parameters = json_encode($parameters);
         $queuedTask->LinkedIds = json_encode($linkedIds);
         $queuedTask->Attempts = 0;
-        $queuedTask->Details = $task->Id . '.task.log.txt';
+        $queuedTask->Details = '';
         $queuedTask->save();
+        
+        $queuedTask->Details = $queuedTask->Id . '.task.log.txt';
+        $queuedTask->save();
+        
         return $queuedTask;
     }
 
