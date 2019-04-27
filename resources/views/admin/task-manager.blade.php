@@ -6,15 +6,23 @@
 
 @section('webpage_header')
 <h1>
-    Task Manager
+    Task Queue Manager
     <button type="button" class="btn btn-primary float-right" onclick="showPageCreateModal();">
         <span class="fas fa-plus-sign"></span>
         Queue Task
     </button>
 </h1>
 <ol class="breadcrumb">
-    <li><a href="<?php echo \Sinevia\Tasks\Helpers\Links::adminHome(); ?>"><i class="fa fa-dashboard"></i> Home</a></li>
-    <li class="active"><a href="<?php echo \Sinevia\Tasks\Helpers\Links::adminHome(); ?>">Tasks</a></li>
+    <li class="breadcrumb-item">
+        <a href="<?php echo \Sinevia\Tasks\Helpers\Links::adminHome(); ?>">
+            <i class="fa fa-dashboard"></i> Home
+        </a>
+    </li>
+    <li class="breadcrumb-item active">
+        <a href="<?php echo \Sinevia\Tasks\Helpers\Links::adminHome(); ?>">
+            Task Queue
+        </a>
+    </li>
 </ol>
 @stop
 
