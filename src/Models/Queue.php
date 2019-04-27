@@ -26,13 +26,13 @@ class Queue extends BaseModel {
         if (is_array($message) OR is_object($message)) {
             $message = json_encode($message);
         }
-        //$details = $this->Details;
-        //$newDetails = $details . "\n" . date('Y-m-d H:i:s') . ' : ' . $message;
-        //$this->Details = $newDetails;
-        //$this->save();
-        $newDetails = "\n" . date('Y-m-d H:i:s') . ' : ' . $message;
         
-        file_put_contents(storage_path('logs/' . $this->Details), $newDetails, FILE_APPEND);
+        $details = $this->Details;
+        $newDetails = $details . "\n" . date('Y-m-d H:i:s') . ' : ' . $message;
+        $this->Details = $newDetails;
+        $this->save();
+        //$newDetails = "\n" . date('Y-m-d H:i:s') . ' : ' . $message;        
+        //file_put_contents(storage_path('logs/' . $this->Details), $newDetails, FILE_APPEND);
     }
 
     public function getChain() {
