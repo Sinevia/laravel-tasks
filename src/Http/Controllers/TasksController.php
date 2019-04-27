@@ -6,7 +6,10 @@ namespace Sinevia\Tasks\Http\Controllers;
  */
 class TasksController extends \Illuminate\Routing\Controller {
     function anyIndex(){
-        return 'Working';
+        return $this->getTaskManager();
+    }
+    
+    function getTaskManager(){
+        return view('tasks::admin/task-manager', get_defined_vars());
     }
 }
-
