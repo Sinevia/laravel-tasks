@@ -33,21 +33,21 @@ class TasksController extends \Illuminate\Routing\Controller {
 
         $query = \Sinevia\Tasks\Models\Task::getModel();
         $query = $query->orderBy($orderby, $sort);
-        $queuedTasks = $query->paginate(20);
+        $tasks = $query->paginate(20);
 
         return view('tasks::admin/task-manager', get_defined_vars());
     }
 
     function getQueueManager() {
         $view = request('view');
-        $session_order_by = \Session::get('tasks_task_manager_by', 'CreatedAt');
-        $session_order_sort = \Session::get('tasks_task_manager_sort', 'DESC');
+        $session_order_by = \Session::get('tasks_queue_manager_by', 'CreatedAt');
+        $session_order_sort = \Session::get('tasks_queue_manager_sort', 'DESC');
         $orderby = request('by', $session_order_by);
         $sort = request('sort', $session_order_sort);
         $page = request('page', 0);
         $results_per_page = 20;
-        \Session::put('tasks_task_manager_by', $orderby); // Keep for session
-        \Session::put('tasks_task_manager_sort', $sort);  // Keep for session
+        \Session::put('tasks_queue_manager_by', $orderby); // Keep for session
+        \Session::put('tasks_queue_manager_sort', $sort);  // Keep for session
 
         $filterStatus = request('filter_status', '');
         $filterSearch = request('filter_search', '');
