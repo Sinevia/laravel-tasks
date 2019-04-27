@@ -9,6 +9,7 @@ class Queue extends BaseModel {
     public static $statusList = [
         'Queued' => 'Queued',
         'Processing' => 'Processing',
+        'Canceled' => 'Canceled',
         'Completed' => 'Completed',
         'Failed' => 'Failed',
         'Paused' => 'Paused',
@@ -21,6 +22,7 @@ class Queue extends BaseModel {
     const STATUS_FAILED = 'Failed';
     const STATUS_PAUSED = 'Paused';
     const STATUS_DELETED = 'Deleted';
+    const STATUS_CANCELED = 'Canceled';
 
     public function appendDetails($message) {
         if (is_array($message) OR is_object($message)) {
