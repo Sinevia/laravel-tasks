@@ -55,7 +55,7 @@ class TasksController extends \Illuminate\Routing\Controller {
         return json_encode(['status' => 'error', 'message' => 'Queued task faied to be deleted']);
     }
 
-    function anyTaskDetails() {
+    function anyQueueTaskDetailsAjax() {
         $queuedTaskId = request('QueuedTaskId');
         $queuedTask = \Sinevia\Tasks\Models\Queue::find($queuedTaskId);
 
@@ -66,7 +66,7 @@ class TasksController extends \Illuminate\Routing\Controller {
         return json_encode(['status' => 'success', 'message' => 'Task found', 'data' => ['Details' => $queuedTask->Details]]);
     }
 
-    function anyTaskRequeue() {
+    function anyQueueTaskRequeueAjax() {
         $queuedTaskId = request('QueuedTaskId');
         $queuedTask = \Sinevia\Tasks\Models\Queue::find($queuedTaskId);
 
