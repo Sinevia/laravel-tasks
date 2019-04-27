@@ -28,7 +28,7 @@
 
 <script>
     function showTaskDetailsModal(taskId) {
-        var url = '<?php echo action('\Sinevia\Tasks\Http\Controllers\TasksController@anyTaskDetails'); ?>?QueuedTaskId=' + taskId;
+        var url = '<?php echo action('\Sinevia\Tasks\Http\Controllers\TasksController@anyQueueTaskDetailsAjax'); ?>?QueuedTaskId=' + taskId;
         $.ajax({// ajax call starts
             url: url,
             data: {QueuedTaskId: taskId, _token: "<?php echo csrf_token(); ?>"},
