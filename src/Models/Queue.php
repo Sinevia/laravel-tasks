@@ -153,7 +153,7 @@ class Queue extends BaseModel {
     public static function queue($taskId, $parameters = [], $linkedIds = []) {
         $queuedTask = new self;
         $queuedTask->Id = \Sinevia\Uid::microUid();
-        $queuedTask->TaskId = $type;
+        $queuedTask->TaskId = $taskId;
         $queuedTask->Status = self::STATUS_QUEUED;
         $queuedTask->Parameters = json_encode($parameters);
         $queuedTask->LinkedIds = json_encode($linkedIds);
