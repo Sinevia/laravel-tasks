@@ -48,4 +48,21 @@ class TasksController extends \Illuminate\Routing\Controller {
         return json_encode(['status' => 'success', 'message' => 'Task found', 'data' => ['Details' => $queuedTask->Details]]);
     }
 
+    function anyTaskRequeue() {
+        $queuedTaskId = request('QueuedTaskId');
+        $queuedTask = \Sinevia\Tasks\Models\Queue::find($queuedTaskId);
+
+        if (is_null($queuedTask)) {
+            return json_encode(['status' => 'error', 'message' => 'Task not found']);
+        }
+
+        $isSuccess = \Sinevia\Tasks\Models\Queue::queue($queuedTask->Id, $queuedTask->getParameters(), $queuedTask->LinkedIds);
+
+        if ($isSuccess) {
+            return json_encode(['status' => 'success', 'message' => 'Task requeued']);
+        }
+        
+        return json_encode(['status' => 'error', 'message' => 'Task faied to be requeued']);
+    }
+
 }
