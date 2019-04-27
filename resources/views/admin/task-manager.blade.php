@@ -7,8 +7,8 @@
 @section('webpage_header')
 <h1>
     Task Manager
-    <button type="button" class="btn btn-primary pull-right" onclick="showPageCreateModal();">
-        <span class="glyphicon glyphicon-plus-sign"></span>
+    <button type="button" class="btn btn-primary float-right" onclick="showPageCreateModal();">
+        <span class="fas fa-plus-sign"></span>
         Queue Task
     </button>
 </h1>
