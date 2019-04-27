@@ -21,27 +21,27 @@
 @section('webpage_content')
 
 @include('tasks::admin.shared-navigation')
+@include('tasks::admin.task-details-modal')
 
 <div class="box box-primary">
     <div class="box-header with-border">
     </div>
 
     <div class="box-body">
-
-        <ul class="nav nav-tabs" style="margin-bottom: 3px;">
-            <li class="<?php if ($view == '') { ?>active<?php } ?>">
-                <a href="?view=all">
-                    <span class="glyphicon glyphicon-list"></span> Live
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link <?php if ($view == '') { ?>active<?php } ?>" href="?view=all">
+                    Live
                 </a>
             </li>
-            <li class="<?php if ($view == 'trash') { ?>active<?php } ?>">
-                <a href="?&view=trash">
-                    <span class="glyphicon glyphicon-trash"></span> Trash
+            <li class="nav-item">
+                <a class="nav-link" href="<?php if ($view == 'trash') { ?>active<?php } ?>">
+                    Trash
                 </a>
             </li>
         </ul>
 
-        <table id="table_articles" class="table table-striped">
+        <table id="table_articles" class="table table-striped" style="margin-top:10px;">
             <tr>
                 <th style="text-align:center;">
                     <a href="?cmd=pages-manager&amp;by=Title&amp;sort=<?php if ($sort == 'asc') { ?>desc<?php } else { ?>asc<?php } ?>">
@@ -148,10 +148,10 @@
                         <?php echo $qt->Status; ?><br>
                     </td>
                     <td style="text-align:center;vertical-align: middle;">
-                        <a href="<?php echo $qt->Url; ?>" class="btn btn-sm btn-success" target="_blank">
+                        <button class="btn btn-sm btn-success" onclick="showTaskDetailsModal('<?php echo $qt->Id; ?>');">
                             <span class="glyphicon glyphicon-eye-open"></span>
                             Details
-                        </a>
+                        </button>
                         <a href="<?php echo \Sinevia\Tasks\Helpers\Links::adminHome(['PageId' => $qt->Id]); ?>" class="btn btn-sm btn-warning">
                             <span class="glyphicon glyphicon-edit"></span>
                             Edit
@@ -176,7 +176,7 @@
         </table>
 
         <!-- START: Pagination -->    
-        {!! $pages->render() !!}
+        {!! $queuedTasks->render() !!}
         <!-- END: Pagination -->
 
     </div>
