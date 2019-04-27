@@ -5,13 +5,11 @@
     }
     #ModalTaskRequeue .modal-footer{
         display: table;
-    }
-    #ModalTaskRequeue .modal-lg {
-        max-width: 80% !important;
+        width:100%;
     }
 </style>
 <div id="ModalTaskRequeue" class="modal fade" style="display:none;">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Task Requeue</h5>
@@ -48,8 +46,6 @@
     function taskRequeue() {
         var taskId = $('#ModalTaskRequeue input[name=QueuedTaskId]').val();
         
-        alert(taskId);
-        
         var url = '<?php echo action('\Sinevia\Tasks\Http\Controllers\TasksController@anyTaskRequeue'); ?>?QueuedTaskId=' + taskId;
         $.ajax({// ajax call starts
             url: url,
@@ -58,7 +54,6 @@
         }).done(function (response) {
             // DEBUG: console.log(response)
             if (response.status === 'success') {
-                alert(response.message);
                 $('#ModalTaskRequeue').modal('hide');
                 window.location.href = window.location.href;
             } else {
