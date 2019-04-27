@@ -185,6 +185,9 @@
         <!-- START: Pagination -->    
         {!! $queuedTasks->render() !!}
         <!-- END: Pagination -->
+        
+        <br />
+        <br />
 
     </div>
 </div>
