@@ -21,6 +21,7 @@
 @section('webpage_content')
 
 @include('tasks::admin.shared-navigation')
+@include('tasks::admin.queue-task-delete-modal')
 @include('tasks::admin.task-details-modal')
 @include('tasks::admin.task-requeue-modal')
 
@@ -150,24 +151,21 @@
                         <?php echo $qt->Status; ?><br>
                     </td>
                     <td style="text-align:center;vertical-align: middle;">
-                        <button class="btn btn-sm btn-success" onclick="showTaskDetailsModal('<?php echo $qt->Id; ?>');">
-                            <span class="glyphicon glyphicon-eye-open"></span>
-                            Details
+                        <button class="btn btn-sm btn-info" onclick="showTaskDetailsModal('<?php echo $qt->Id; ?>');" title="Details">
+                            <i class="fas fa-eye"></i>
                         </button>
-                        <button class="btn btn-sm btn-success" onclick="showTaskRequeueModal('<?php echo $qt->Id; ?>');">
-                            <span class="fa fa-queue"></span>
-                            Requeue
+                        <button class="btn btn-sm btn-info" onclick="showTaskRequeueModal('<?php echo $qt->Id; ?>');" title="Re-queue">
+                            <span class="fas fa-retweet"></span>
                         </button>
                         <?php if ($qt->Status == 'Deleted') { ?>
-                            <button class="btn btn-sm btn-danger" onclick="confirmPageDelete('<?php echo $qt->Id; ?>');">
-                                <span class="glyphicon glyphicon-remove-sign"></span>
-                                Delete
+                            <button class="btn btn-sm btn-danger" onclick="showQueueTaskDeketeModal('<?php echo $qt->Id; ?>');" title="Delete">
+                                <i class="fas fa-minus-circle"></i>
                             </button>
                         <?php } ?>
 
                         <?php if ($qt->Status != 'Deleted') { ?>
-                            <button class="btn btn-sm btn-danger" onclick="confirmPageMoveToTrash('<?php echo $qt->Id; ?>');">
-                                <span class="glyphicon glyphicon-trash"></span>
+                            <button class="btn btn-sm btn-danger" onclick="showQueueTaskDeketeModal('<?php echo $qt->Id; ?>');" title="Trash">
+                                <i class="fas fa-trash"></i>
                                 Trash
                             </button>
                         <?php } ?>
@@ -183,5 +181,12 @@
 
     </div>
 </div>
+
+<script>
+    setTimeout(function () {
+        // Autorefresh
+        window.location.href = window.location.href;
+    }, 20000);
+</script>
 
 @stop
