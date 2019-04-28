@@ -92,6 +92,17 @@ class TasksController extends \Illuminate\Routing\Controller {
 
         return json_encode(['status' => 'success', 'message' => 'Task found', 'data' => ['Details' => $queuedTask->Details]]);
     }
+    
+    function anyQueueTaskParametersAjax() {
+        $queuedTaskId = request('QueuedTaskId');
+        $queuedTask = \Sinevia\Tasks\Models\Queue::find($queuedTaskId);
+
+        if (is_null($queuedTask)) {
+            return json_encode(['status' => 'error', 'message' => 'Task not found']);
+        }
+
+        return json_encode(['status' => 'success', 'message' => 'Task found', 'data' => ['Details' => $queuedTask->getParameters()]]);
+    }
 
     function anyQueueTaskRequeueAjax() {
         $queuedTaskId = request('QueuedTaskId');
