@@ -39,6 +39,7 @@
     </div>
 
     <div class="box-body">
+        <!-- TODO
         <ul class="nav nav-tabs">
             <li class="nav-item">
                 <a class="nav-link <?php if ($view == '') { ?>active<?php } ?>" href="?view=all">
@@ -51,6 +52,7 @@
                 </a>
             </li>
         </ul>
+        -->
 
         <table id="table_articles" class="table table-striped" style="margin-top:10px;">
             <tr>
