@@ -6,7 +6,7 @@
         "Sinevia",
         "Laravel",
         "Task",
-        "Queue",
+        "Queue"
     ],
     "homepage": "https://github.com/Sinevia/laravel-tasks",
     "license": "proprietary",
