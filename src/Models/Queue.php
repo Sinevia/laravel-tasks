@@ -153,11 +153,21 @@ class Queue extends BaseModel {
         $queuedTask->save();
         return $queuedTask;
     }
+    
+    public static function enqueueTaskByAlias($taskAlias, $parameters = []){
+        $task = Task::whereAlias(trim($taskAlias))->first();
+        
+        if($task==null){
+            return false;
+        }
+        
+        return self::enqueueTaskById($task->Id);
+    }
 
     /**
      * Queues a task by ID and returns the queued instance
      */
-    public static function queue($taskId, $parameters = []) {
+    public static function enqueueTaskById($taskId, $parameters = []) {
         $queuedTask = new self;
         $queuedTask->Id = \Sinevia\Uid::microUid();
         $queuedTask->TaskId = $taskId;
