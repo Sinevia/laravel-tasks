@@ -41,6 +41,7 @@
 <script>
 
     function showTaskRequeueModal(taskId) {
+        window.autoreload = false;
         $('#ModalTaskRequeue input[name=QueuedTaskId]').val(taskId);
         $('#ModalTaskRequeue').modal('show');
         var url = '<?php echo action('\Sinevia\Tasks\Http\Controllers\TasksController@anyQueueTaskParametersAjax'); ?>?QueuedTaskId=' + taskId;
@@ -51,7 +52,7 @@
         }).done(function (response) {
             // DEBUG: console.log(response)
             if (response.status === 'success') {
-                $('#ModalTaskRequeue textarea[name=Parameters]').val(response.data.Details);
+                $('#ModalTaskRequeue textarea[name=Parameters]').val(response.data.Parameters);
             } else {
                 alert(response.message);
                 $('#ModalTaskRequeue').modal('hide');
@@ -63,7 +64,7 @@
 
     function taskRequeue() {
         var taskId = $('#ModalTaskRequeue input[name=QueuedTaskId]').val();
-        var parameters = $('#ModalTaskRequeue input[name=Parameters]').val();
+        var parameters = $('#ModalTaskRequeue textarea[name=Parameters]').val();
 
         var url = '<?php echo action('\Sinevia\Tasks\Http\Controllers\TasksController@anyQueueTaskRequeueAjax'); ?>?QueuedTaskId=' + taskId;
         $.ajax({// ajax call starts
@@ -84,7 +85,7 @@
             alert('Getting details failed');
             $('#ModalTaskRequeue').modal('hide');
         });
-
+        window.autoreload = true;
     }
 </script>
 <!-- END: Task Requeue Dialog -->
