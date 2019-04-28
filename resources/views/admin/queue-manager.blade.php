@@ -2,14 +2,14 @@
     @extends(config('tasks.layout-master'))
 <?php } ?>
 
-@section('webpage_title', 'Task Manager')
+@section('webpage_title', 'Queue Manager')
 
 @section('webpage_header')
 <h1>
-    Task Queue Manager
+    Queue Manager
     <button type="button" class="btn btn-primary float-right" onclick="showPageCreateModal();">
         <span class="fas fa-plus-sign"></span>
-        Queue Task
+        Enqueue Task
     </button>
 </h1>
 <ol class="breadcrumb">
@@ -19,8 +19,8 @@
         </a>
     </li>
     <li class="breadcrumb-item active">
-        <a href="<?php echo \Sinevia\Tasks\Helpers\Links::adminHome(); ?>">
-            Task Queue
+        <a href="<?php echo \Sinevia\Tasks\Helpers\Links::adminQueueManager(); ?>">
+            Queue Manager
         </a>
     </li>
 </ol>
