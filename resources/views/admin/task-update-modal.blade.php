@@ -68,7 +68,7 @@
             return fase;
         }
 
-        var url = '<?php echo action('\Sinevia\Tasks\Http\Controllers\TasksController@anyQueueTaskUpdateAjax'); ?>?TaskId=' + taskId;
+        var url = '<?php echo action('\Sinevia\Tasks\Http\Controllers\TasksController@anyTaskUpdateAjax'); ?>?TaskId=' + taskId;
         $.ajax({// ajax call starts
             url: url,
             data: {
