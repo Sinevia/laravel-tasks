@@ -12,7 +12,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Task Delete</h5>
+                <h5 class="modal-title">Edit Task</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -28,7 +28,7 @@
                 </div>
                 <div class="form-group">
                     <label>Description</label>
-                    <textarea name="Decription" class="form-control"></textarea>
+                    <textarea name="Description" class="form-control"></textarea>
                 </div>
                 <input type="hidden" name="TaskId"></textarea>
             </div>
@@ -37,9 +37,9 @@
                     <i class="fas fa-chevron-left"></i>
                     Cancel
                 </a>
-                <a id="modal-close" href="#" class="btn btn-danger float-right" data-dismiss="modal" onclick="taskUpdate();">
-                    <i class="fas fa-minus-circle"></i>
-                    Delete
+                <a id="modal-close" href="#" class="btn btn-success float-right" data-dismiss="modal" onclick="taskUpdate();">
+                    <i class="fas fa-check-circle"></i>
+                    Save
                 </a>
             </div>
         </div>
@@ -49,15 +49,37 @@
 <script>
 
     function showTaskUpdateModal(taskId) {
+        var url = '<?php echo action('\Sinevia\Tasks\Http\Controllers\TasksController@anyTaskAjax'); ?>?TaskId=' + taskId;
+        $.ajax({// ajax call starts
+            url: url,
+            data: {TaskId: taskId, _token: "<?php echo csrf_token(); ?>"},
+            dataType: 'json'
+        }).done(function (response) {
+            // DEBUG: console.log(response)
+            if (response.status === 'success') {
+                $('#ModalTaskUpdate input[name=Title]').val(response.data.Title);
+                $('#ModalTaskUpdate input[name=Alias]').val(response.data.Alias);
+                $('#ModalTaskUpdate input[name=Status]').val(response.data.Status);
+                $('#ModalTaskUpdate textarea[name=Description]').val(response.data.Description);
+            } else {
+                alert(response.message);
+                $('#ModalTaskUpdate').modal('hide');
+            }
+        }).fail(function () {
+            alert('Updating task failed');
+            $('#ModalTaskUpdate').modal('hide');
+        });
+        
         $('#ModalTaskUpdate input[name=TaskId]').val(taskId);
         $('#ModalTaskUpdate').modal('show');
     }
 
     function taskUpdate() {
         var taskId = $('#ModalTaskUpdate input[name=TaskId]').val();
-        var title = $('#ModalTaskCreate input[name=Title]').val();
-        var alias = $('#ModalTaskCreate input[name=Alias]').val();
-        var description = $('#ModalTaskCreate textarea[name=Description]').val();
+        var title = $('#ModalTaskUpdate input[name=Title]').val();
+        var alias = $('#ModalTaskUpdate input[name=Alias]').val();
+        var status = $('#ModalTaskUpdate select[name=Status]').val();
+        var description = $('#ModalTaskUpdate textarea[name=Description]').val();
 
         if (title == "") {
             alert('Title is required field');
@@ -75,6 +97,7 @@
                 TaskId: taskId,
                 Title: title,
                 Alias: alias,
+                Status: status,
                 Description: description,
                 _token: "<?php echo csrf_token(); ?>"
             },
