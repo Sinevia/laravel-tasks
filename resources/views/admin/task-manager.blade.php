@@ -6,10 +6,10 @@
 
 @section('webpage_header')
 <h1>
-    Task Queue Manager
-    <button type="button" class="btn btn-primary float-right" onclick="showPageCreateModal();">
+    Task Manager
+    <button type="button" class="btn btn-primary float-right" onclick="showTaskCreateModal();">
         <span class="fas fa-plus-sign"></span>
-        Queue Task
+        New Task
     </button>
 </h1>
 <ol class="breadcrumb">
@@ -19,8 +19,8 @@
         </a>
     </li>
     <li class="breadcrumb-item active">
-        <a href="<?php echo \Sinevia\Tasks\Helpers\Links::adminHome(); ?>">
-            Task Queue
+        <a href="<?php echo \Sinevia\Tasks\Helpers\Links::adminTaskManager(); ?>">
+            Task Manager
         </a>
     </li>
 </ol>
@@ -29,9 +29,9 @@
 @section('webpage_content')
 
 @include('tasks::admin.shared-navigation')
-@include('tasks::admin.queue-task-delete-modal')
-@include('tasks::admin.queue-task-details-modal')
-@include('tasks::admin.queue-task-requeue-modal')
+@include('tasks::admin.task-create-modal')
+@include('tasks::admin.task-delete-modal')
+@include('tasks::admin.task-update-modal')
 
 <div class="box box-primary">
     <div class="box-header with-border">
@@ -82,15 +82,6 @@
                         ?>
                     </a>
                 </th>
-                <th>
-                    Start Time
-                </th>
-                <th>
-                    End Time
-                </th>
-                <th>
-                    Elapsed Time
-                </th>
                 <th style="text-align:center;width:100px;">
                     <a href="?cmd=pages-manager&amp;by=Status&amp;sort=<?php if ($sort == 'asc') { ?>desc<?php } else { ?>asc<?php } ?>">
                         Status&nbsp;<?php
@@ -132,20 +123,20 @@
                         <?php echo $t->Status; ?><br>
                     </td>
                     <td style="text-align:center;vertical-align: middle;">
-                        <button class="btn btn-sm btn-info" onclick="showTaskDetailsModal('<?php echo $t->Id; ?>');" title="Details">
-                            <i class="fas fa-eye"></i>
+                        <button class="btn btn-sm btn-info" onclick="showTaskUpdateModal('<?php echo $t->Id; ?>');" title="Details">
+                            <i class="fas fa-edit"></i>
                         </button>
-                        <button class="btn btn-sm btn-info" onclick="showTaskRequeueModal('<?php echo $t->Id; ?>');" title="Re-queue">
+                        <button class="btn btn-sm btn-info" onclick="showTaskQueueModal('<?php echo $t->Id; ?>');" title="Re-queue">
                             <span class="fas fa-retweet"></span>
                         </button>
                         <?php if ($t->Status == 'Deleted') { ?>
-                            <button class="btn btn-sm btn-danger" onclick="showQueueTaskDeketeModal('<?php echo $t->Id; ?>');" title="Delete">
+                            <button class="btn btn-sm btn-danger" onclick="showTaskDeleteModal('<?php echo $t->Id; ?>');" title="Delete">
                                 <i class="fas fa-minus-circle"></i>
                             </button>
                         <?php } ?>
 
                         <?php if ($t->Status != 'Deleted') { ?>
-                            <button class="btn btn-sm btn-danger" onclick="showQueueTaskDeketeModal('<?php echo $t->Id; ?>');" title="Trash">
+                            <button class="btn btn-sm btn-danger" onclick="showTaskDeleteModal('<?php echo $t->Id; ?>');" title="Trash">
                                 <i class="fas fa-trash"></i>
                             </button>
                         <?php } ?>
@@ -164,12 +155,5 @@
 
     </div>
 </div>
-
-<script>
-    setTimeout(function () {
-        // Autorefresh
-        window.location.href = window.location.href;
-    }, 20000);
-</script>
 
 @stop
