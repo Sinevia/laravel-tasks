@@ -101,7 +101,7 @@ class TasksController extends \Illuminate\Routing\Controller {
             return json_encode(['status' => 'error', 'message' => 'Task not found']);
         }
 
-        return json_encode(['status' => 'success', 'message' => 'Task found', 'data' => ['Details' => $queuedTask->getParameters()]]);
+        return json_encode(['status' => 'success', 'message' => 'Task found', 'data' => ['Details' => $queuedTask->Parameters]]);
     }
 
     function anyQueueTaskRequeueAjax() {
