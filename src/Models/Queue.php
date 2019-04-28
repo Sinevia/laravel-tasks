@@ -161,7 +161,7 @@ class Queue extends BaseModel {
             return false;
         }
         
-        return self::enqueueTaskById($task->Id);
+        return self::enqueueTaskById($task->Id, $parameters);
     }
 
     /**
