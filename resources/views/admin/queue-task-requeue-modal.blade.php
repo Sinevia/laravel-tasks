@@ -41,9 +41,9 @@
 <script>
 
     function showTaskRequeueModal(taskId) {
-        window.autoreload = false;
         $('#ModalTaskRequeue input[name=QueuedTaskId]').val(taskId);
-        $('#ModalTaskRequeue').modal('show');
+                
+        window.autoreload = false;
         var url = '<?php echo action('\Sinevia\Tasks\Http\Controllers\TasksController@anyQueueTaskParametersAjax'); ?>?QueuedTaskId=' + taskId;
         $.ajax({// ajax call starts
             url: url,
@@ -53,6 +53,7 @@
             // DEBUG: console.log(response)
             if (response.status === 'success') {
                 $('#ModalTaskRequeue textarea[name=Parameters]').val(response.data.Parameters);
+                $('#ModalTaskRequeue').modal('show');
             } else {
                 alert(response.message);
                 $('#ModalTaskRequeue').modal('hide');
