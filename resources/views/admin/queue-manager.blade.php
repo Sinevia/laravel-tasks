@@ -31,6 +31,7 @@
 @include('tasks::admin.shared-navigation')
 @include('tasks::admin.queue-task-delete-modal')
 @include('tasks::admin.queue-task-details-modal')
+@include('tasks::admin.queue-task-parameters-modal')
 @include('tasks::admin.queue-task-requeue-modal')
 
 <div class="box box-primary">
@@ -159,6 +160,9 @@
                         <?php echo $qt->Status; ?><br>
                     </td>
                     <td style="text-align:center;vertical-align: middle;">
+                        <button class="btn btn-sm btn-info" onclick="showTaskParametersModal('<?php echo $qt->Id; ?>');" title="Parameters">
+                            <i class="fas fa-code"></i>
+                        </button>
                         <button class="btn btn-sm btn-info" onclick="showTaskDetailsModal('<?php echo $qt->Id; ?>');" title="Details">
                             <i class="fas fa-eye"></i>
                         </button>
