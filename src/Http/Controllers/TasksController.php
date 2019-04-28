@@ -95,6 +95,23 @@ class TasksController extends \Illuminate\Routing\Controller {
 
         return json_encode(['status' => 'error', 'message' => 'Task faied to be created']);
     }
+    
+    function anyTaskDeleteAjax() {
+        $taskId = request('TaskId');
+        $task = \Sinevia\Tasks\Models\Task::find($taskId);
+
+        if (is_null($task)) {
+            return json_encode(['status' => 'error', 'message' => 'Task not found']);
+        }
+
+        $isSuccess = $task->delete();
+
+        if ($isSuccess) {
+            return json_encode(['status' => 'success', 'message' => 'Task deleted']);
+        }
+
+        return json_encode(['status' => 'error', 'message' => 'Task faied to be deleted']);
+    }
 
     function anyQueueTaskDeleteAjax() {
         $queuedTaskId = request('QueuedTaskId');
@@ -156,7 +173,7 @@ class TasksController extends \Illuminate\Routing\Controller {
             return json_encode(['status' => 'error', 'message' => 'Task not found']);
         }
 
-        $isSuccess = \Sinevia\Tasks\Models\Queue::queue($queuedTask->task->Id, $parameters, $queuedTask->LinkedIds);
+        $isSuccess = \Sinevia\Tasks\Models\Queue::enqueueTaskById($queuedTask->task->Id, $parameters, $queuedTask->LinkedIds);
 
         if ($isSuccess) {
             return json_encode(['status' => 'success', 'message' => 'Task requeued']);
