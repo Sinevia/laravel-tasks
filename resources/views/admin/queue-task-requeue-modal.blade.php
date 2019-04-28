@@ -18,10 +18,10 @@
                 </button>
             </div>
             <div class="modal-body">
-                Are you sure you want to requeue this task?
-                <br />
-                <br />
-                This cannot be stopped once triggered
+                <div class="form-group">
+                    <label>Parameters</label>
+                    <textarea name="Parameters" class="form-control" style="width:100%;height:300px;"></textarea>
+                </div>
                 <input type="hidden" name="QueuedTaskId"></textarea>
             </div>
             <div class="modal-footer">
@@ -39,19 +39,36 @@
 </div>
 
 <script>
-    
+
     function showTaskRequeueModal(taskId) {
         $('#ModalTaskRequeue input[name=QueuedTaskId]').val(taskId);
         $('#ModalTaskRequeue').modal('show');
-    }
-    
-    function taskRequeue() {
-        var taskId = $('#ModalTaskRequeue input[name=QueuedTaskId]').val();
-        
-        var url = '<?php echo action('\Sinevia\Tasks\Http\Controllers\TasksController@anyQueueTaskRequeueAjax'); ?>?QueuedTaskId=' + taskId;
+        var url = '<?php echo action('\Sinevia\Tasks\Http\Controllers\TasksController@anyQueueTaskParametersAjax'); ?>?QueuedTaskId=' + taskId;
         $.ajax({// ajax call starts
             url: url,
             data: {QueuedTaskId: taskId, _token: "<?php echo csrf_token(); ?>"},
+            dataType: 'json'
+        }).done(function (response) {
+            // DEBUG: console.log(response)
+            if (response.status === 'success') {
+                $('#ModalTaskRequeue textarea[name=Parameters]').val(response.data.Details);
+            } else {
+                alert(response.message);
+                $('#ModalTaskRequeue').modal('hide');
+            }
+        }).fail(function () {
+            alert('Getting parameters failed');
+        });
+    }
+
+    function taskRequeue() {
+        var taskId = $('#ModalTaskRequeue input[name=QueuedTaskId]').val();
+        var parameters = $('#ModalTaskRequeue input[name=Parameters]').val();
+
+        var url = '<?php echo action('\Sinevia\Tasks\Http\Controllers\TasksController@anyQueueTaskRequeueAjax'); ?>?QueuedTaskId=' + taskId;
+        $.ajax({// ajax call starts
+            url: url,
+            data: {QueuedTaskId: taskId, Parameters: parameters, _token: "<?php echo csrf_token(); ?>"},
             dataType: 'json'
         }).done(function (response) {
             // DEBUG: console.log(response)
@@ -67,7 +84,7 @@
             alert('Getting details failed');
             $('#ModalTaskRequeue').modal('hide');
         });
-        
+
     }
 </script>
 <!-- END: Task Requeue Dialog -->
