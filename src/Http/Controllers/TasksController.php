@@ -101,22 +101,31 @@ class TasksController extends \Illuminate\Routing\Controller {
             return json_encode(['status' => 'error', 'message' => 'Task not found']);
         }
 
-        return json_encode(['status' => 'success', 'message' => 'Task found', 'data' => ['Details' => $queuedTask->Parameters]]);
+        return json_encode(['status' => 'success', 'message' => 'Task found', 'data' => ['Parameters' => $queuedTask->Parameters]]);
     }
 
     function anyQueueTaskRequeueAjax() {
-        $queuedTaskId = request('QueuedTaskId');
+        $queuedTaskId = trim(request('QueuedTaskId'));
+        $parameters = trim(request('Parameters'));
         $queuedTask = \Sinevia\Tasks\Models\Queue::find($queuedTaskId);
 
         if (is_null($queuedTask)) {
             return json_encode(['status' => 'error', 'message' => 'Queued task not found']);
+        }
+        
+        if ($parameters == "") {
+            return json_encode(['status' => 'error', 'message' => 'Parameters is required field']);
+        }
+        
+        if (\Sinevia\StringUtils::isJson($parameters) == false) {
+            return json_encode(['status' => 'error', 'message' => 'Parameters is not valid JSON']);
         }
 
         if ($queuedTask->task == null) {
             return json_encode(['status' => 'error', 'message' => 'Task not found']);
         }
 
-        $isSuccess = \Sinevia\Tasks\Models\Queue::queue($queuedTask->task->Id, $queuedTask->getParameters(), $queuedTask->LinkedIds);
+        $isSuccess = \Sinevia\Tasks\Models\Queue::queue($queuedTask->task->Id, $parameters, $queuedTask->LinkedIds);
 
         if ($isSuccess) {
             return json_encode(['status' => 'success', 'message' => 'Task requeued']);
