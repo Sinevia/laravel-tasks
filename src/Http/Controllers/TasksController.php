@@ -65,6 +65,26 @@ class TasksController extends \Illuminate\Routing\Controller {
         return view('tasks::admin/queue-manager', get_defined_vars());
     }
 
+    function anyTaskAjax() {
+        $taskId = request('TaskId');
+        $task = \Sinevia\Tasks\Models\Task::find($taskId);
+
+        if (is_null($task)) {
+            return json_encode(['status' => 'error', 'message' => 'Task not found']);
+        }
+
+        return json_encode([
+            'status' => 'success',
+            'message' => 'Task found',
+            'data' => [
+                'Title' => $task->Title,
+                'Alias' => $task->Alias,
+                'Description' => $task->Description,
+                'Status' => $task->Status,
+            ]
+        ]);
+    }
+
     function anyTaskCreateAjax() {
         $title = request('Title');
         $alias = request('Alias');
@@ -95,7 +115,7 @@ class TasksController extends \Illuminate\Routing\Controller {
 
         return json_encode(['status' => 'error', 'message' => 'Task faied to be created']);
     }
-    
+
     function anyTaskDeleteAjax() {
         $taskId = request('TaskId');
         $task = \Sinevia\Tasks\Models\Task::find($taskId);
@@ -111,6 +131,39 @@ class TasksController extends \Illuminate\Routing\Controller {
         }
 
         return json_encode(['status' => 'error', 'message' => 'Task faied to be deleted']);
+    }
+
+    function anyTaskUpdateAjax() {
+        $taskId = request('TaskId');
+        $task = \Sinevia\Tasks\Models\Task::find($taskId);
+
+        if (is_null($task)) {
+            return json_encode(['status' => 'error', 'message' => 'Task not found']);
+        }
+
+        $title = request('Title');
+        $alias = request('Alias');
+        $description = request('Description');
+
+        if ($title == "") {
+            return json_encode(['status' => 'error', 'message' => 'Title is required field']);
+        }
+
+        if ($alias == "") {
+            return json_encode(['status' => 'error', 'message' => 'Alias is required field']);
+        }
+
+        $task->Title = $title;
+        $task->Alias = $alias;
+        $task->Description = $description;
+
+        $isSuccess = $task->save();
+
+        if ($isSuccess) {
+            return json_encode(['status' => 'success', 'message' => 'Task updated successfully']);
+        }
+
+        return json_encode(['status' => 'error', 'message' => 'Task faied to be updated']);
     }
 
     function anyQueueTaskDeleteAjax() {
