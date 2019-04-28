@@ -226,7 +226,7 @@ class TasksController extends \Illuminate\Routing\Controller {
             return json_encode(['status' => 'error', 'message' => 'Task not found']);
         }
 
-        $isSuccess = \Sinevia\Tasks\Models\Queue::enqueueTaskById($queuedTask->task->Id, $parameters, $queuedTask->LinkedIds);
+        $isSuccess = \Sinevia\Tasks\Models\Queue::enqueueTaskById($queuedTask->task->Id, json_decode($parameters, true));
 
         if ($isSuccess) {
             return json_encode(['status' => 'success', 'message' => 'Task requeued']);
