@@ -197,7 +197,11 @@
 </div>
 
 <script>
+    window.autoreload = true;
     setTimeout(function () {
+        if (window.autoreload == false) {
+            return;
+        }
         // Autorefresh
         window.location.href = window.location.href;
     }, 20000);
