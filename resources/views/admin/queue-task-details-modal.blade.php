@@ -20,7 +20,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <textarea name="Details" class="form-control" style="width:100%;height:600px;"></textarea>
+                <textarea name="Details" class="form-control" style="width:100%;height:400px;"></textarea>
             </div>
         </div>
     </div>
