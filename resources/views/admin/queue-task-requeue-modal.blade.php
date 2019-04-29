@@ -20,7 +20,7 @@
             <div class="modal-body">
                 <div class="form-group">
                     <label>Parameters</label>
-                    <textarea name="Parameters" class="form-control" style="width:100%;height:300px;"></textarea>
+                    <textarea name="Parameters" class="form-control" style="width:100%;height:100px;"></textarea>
                 </div>
                 <input type="hidden" name="QueuedTaskId"></textarea>
             </div>
