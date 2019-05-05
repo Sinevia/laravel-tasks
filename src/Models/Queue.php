@@ -7,20 +7,22 @@ class Queue extends BaseModel {
     protected $table = 'snv_tasks_queue';
     protected $primaryKey = 'Id';
     public static $statusList = [
-        'Queued' => 'Queued',
-        'Processing' => 'Processing',
+        'Cancelled' => 'Cancelled',
         'Completed' => 'Completed',
+        'Deleted' => 'Deleted',
         'Failed' => 'Failed',
         'Paused' => 'Paused',
-        'Deleted' => 'Deleted',
+        'Processing' => 'Processing',
+        'Queued' => 'Queued',
     ];
 
-    const STATUS_QUEUED = 'Queued';
-    const STATUS_PROCESSING = 'Processing';
+    const STATUS_CANCELLED = 'Cancelled';
     const STATUS_COMPLETED = 'Completed';
+    const STATUS_DELETED = 'Deleted';
     const STATUS_FAILED = 'Failed';
     const STATUS_PAUSED = 'Paused';
-    const STATUS_DELETED = 'Deleted';
+    const STATUS_PROCESSING = 'Processing';
+    const STATUS_QUEUED = 'Queued';
 
     public function task() {
         return $this->belongsTo('Sinevia\Tasks\Models\Task', 'TaskId', 'Id');
@@ -158,7 +160,7 @@ class Queue extends BaseModel {
         $task = Task::whereAlias(trim($taskAlias))->first();
         
         if($task==null){
-            return false;
+            return null;
         }
         
         return self::enqueueTaskById($task->Id, $parameters);
