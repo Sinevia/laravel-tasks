@@ -102,9 +102,9 @@
                 <?php
                 $taskName = $t->Title;
                 $createdAtTime = trim($t->CreatedAt);
-                $createdAt = ($createdAtTime != "") ? 'n/a' : date('Y-m-d H:i:s', strtotime($createdAtTime));
+                $createdAt = ($createdAtTime == "") ? 'n/a' : date('Y-m-d H:i:s', strtotime($createdAtTime));
                 $updatedAtTime = trim($t->UpdatedAt);
-                $updatedAt = ($updatedAtTime != "") ? 'n/a' : date('Y-m-d H:i:s', strtotime($updatedAtTime));
+                $updatedAt = ($updatedAtTime == "") ? 'n/a' : date('Y-m-d H:i:s', strtotime($updatedAtTime));
                 ?>
                 <tr>
                     <td>
