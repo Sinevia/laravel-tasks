@@ -1,8 +1,8 @@
 <?php
 
-namespace Sinevia\Models\Tasks;
+namespace Sinevia\Tasks\Models;
 
-class Queue extends \App\Models\BaseModel {
+class Queue extends BaseModel {
 
     protected $table = 'snv_tasks_queue';
     protected $primaryKey = 'Id';
@@ -22,17 +22,21 @@ class Queue extends \App\Models\BaseModel {
     const STATUS_PAUSED = 'Paused';
     const STATUS_DELETED = 'Deleted';
 
+    public function task() {
+        return $this->belongsTo('Sinevia\Tasks\Models\Task', 'TaskId', 'Id');
+    }
+
     public function appendDetails($message) {
         if (is_array($message) OR is_object($message)) {
             $message = json_encode($message);
         }
-        //$details = $this->Details;
-        //$newDetails = $details . "\n" . date('Y-m-d H:i:s') . ' : ' . $message;
-        //$this->Details = $newDetails;
-        //$this->save();
-        $newDetails = "\n" . date('Y-m-d H:i:s') . ' : ' . $message;
-        
-        file_put_contents(storage_path('logs/' . $this->Details), $newDetails, FILE_APPEND);
+
+        $details = $this->Details;
+        $newDetails = $details . "\n" . date('Y-m-d H:i:s') . ' : ' . $message;
+        $this->Details = $newDetails;
+        $this->save();
+        //$newDetails = "\n" . date('Y-m-d H:i:s') . ' : ' . $message;        
+        //file_put_contents(storage_path('logs/' . $this->Details), $newDetails, FILE_APPEND);
     }
 
     public function getChain() {
@@ -149,17 +153,33 @@ class Queue extends \App\Models\BaseModel {
         $queuedTask->save();
         return $queuedTask;
     }
+    
+    public static function enqueueTaskByAlias($taskAlias, $parameters = []){
+        $task = Task::whereAlias(trim($taskAlias))->first();
+        
+        if($task==null){
+            return false;
+        }
+        
+        return self::enqueueTaskById($task->Id, $parameters);
+    }
 
-    public static function queue($taskId, $parameters = [], $linkedIds = []) {
+    /**
+     * Queues a task by ID and returns the queued instance
+     */
+    public static function enqueueTaskById($taskId, $parameters = []) {
         $queuedTask = new self;
         $queuedTask->Id = \Sinevia\Uid::microUid();
-        $queuedTask->TaskId = $type;
+        $queuedTask->TaskId = $taskId;
         $queuedTask->Status = self::STATUS_QUEUED;
         $queuedTask->Parameters = json_encode($parameters);
-        $queuedTask->LinkedIds = json_encode($linkedIds);
         $queuedTask->Attempts = 0;
-        $queuedTask->Details = $task->Id . '.task.log.txt';
+        $queuedTask->Details = '';
         $queuedTask->save();
+
+        $queuedTask->Details = $queuedTask->Id . '.task.log.txt';
+        $queuedTask->save();
+
         return $queuedTask;
     }
 
@@ -173,8 +193,8 @@ class Queue extends \App\Models\BaseModel {
                         $table->string($o->primaryKey, 40)->primary();
                         $table->enum('Status', $statusKeys)->default(self::STATUS_QUEUED);
                         $table->string('TaskId', 40);
-                        $table->string('TaskAlias', 50);
-                        $table->string('LinkedIds', 255)->default('');
+                        //$table->string('Type', 50);
+                        //$table->string('LinkedIds', 255)->default('');
                         $table->text('Parameters')->nullable();
                         $table->text('Output')->nullable();
                         $table->text('Details')->nullable();
@@ -184,7 +204,7 @@ class Queue extends \App\Models\BaseModel {
                         $table->datetime('CreatedAt')->nullable()->default(NULL);
                         $table->datetime('UpdatedAt')->nullable()->default(NULL);
                         $table->datetime('DeletedAt')->nullable()->default(NULL);
-                        $table->index(['Status', 'Type']);
+                        // $table->index(['Status', 'Type']);
                     });
         }
 
