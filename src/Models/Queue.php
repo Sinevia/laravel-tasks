@@ -33,7 +33,8 @@ class Queue extends BaseModel {
             $message = json_encode($message);
         }
 
-        $details = $this->Details;
+        $newInstance = $this->fresh();
+        $details = $newInstance->Details;
         $newDetails = $details . "\n" . date('Y-m-d H:i:s') . ' : ' . $message;
         $this->Details = $newDetails;
         $this->save();
