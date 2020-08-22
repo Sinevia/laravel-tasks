@@ -31,6 +31,7 @@
 @include('tasks::admin.shared-navigation')
 @include('tasks::admin.task-create-modal')
 @include('tasks::admin.task-delete-modal')
+@include('tasks::admin.task-enqueue-modal')
 @include('tasks::admin.task-update-modal')
 
 <div class="box box-primary">
@@ -102,9 +103,9 @@
                 <?php
                 $taskName = $t->Title;
                 $createdAtTime = trim($t->CreatedAt);
-                $createdAt = ($createdAtTime != "") ? 'n/a' : date('Y-m-d H:i:s', strtotime($createdAtTime));
+                $createdAt = ($createdAtTime == "") ? 'n/a' : date('Y-m-d H:i:s', strtotime($createdAtTime));
                 $updatedAtTime = trim($t->UpdatedAt);
-                $updatedAt = ($updatedAtTime != "") ? 'n/a' : date('Y-m-d H:i:s', strtotime($updatedAtTime));
+                $updatedAt = ($updatedAtTime == "") ? 'n/a' : date('Y-m-d H:i:s', strtotime($updatedAtTime));
                 ?>
                 <tr>
                     <td>
@@ -128,8 +129,8 @@
                         <button class="btn btn-sm btn-info" onclick="showTaskUpdateModal('<?php echo $t->Id; ?>');" title="Details">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="btn btn-sm btn-info" onclick="showTaskQueueModal('<?php echo $t->Id; ?>');" title="Re-queue">
-                            <span class="fas fa-retweet"></span>
+                        <button class="btn btn-sm btn-info" onclick="showTaskEnqueueModal('<?php echo $t->Id; ?>');" title="Enque">
+                            <span class="fas fa-play"></span>
                         </button>
                         <?php if ($t->Status == 'Deleted') { ?>
                             <button class="btn btn-sm btn-danger" onclick="showTaskDeleteModal('<?php echo $t->Id; ?>');" title="Delete">

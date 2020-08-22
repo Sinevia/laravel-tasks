@@ -25,6 +25,14 @@
                 <div class="form-group">
                     <label>Alias (used for command name)</label>
                     <input name="Alias" class="form-control" />
+                </div>                
+                <div class="form-group">
+                    <label>Status</label>
+                    <select name="Status" class="form-control">
+                        <option></option>
+                        <option value="<?php echo Sinevia\Tasks\Models\Task::STATUS_ACTIVE?>">Active</option>                        
+                        <option value="<?php echo Sinevia\Tasks\Models\Task::STATUS_DISABLED?>">Disabled</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label>Description</label>
@@ -59,7 +67,7 @@
             if (response.status === 'success') {
                 $('#ModalTaskUpdate input[name=Title]').val(response.data.Title);
                 $('#ModalTaskUpdate input[name=Alias]').val(response.data.Alias);
-                $('#ModalTaskUpdate input[name=Status]').val(response.data.Status);
+                $('#ModalTaskUpdate select[name=Status]').val(response.data.Status);
                 $('#ModalTaskUpdate textarea[name=Description]').val(response.data.Description);
             } else {
                 alert(response.message);

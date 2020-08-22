@@ -132,6 +132,38 @@ class TasksController extends \Illuminate\Routing\Controller {
 
         return json_encode(['status' => 'error', 'message' => 'Task faied to be deleted']);
     }
+    
+    function anyTaskEnqueueAjax() {
+        $taskId = request('TaskId');
+        $parameters = trim(request('Parameters'));
+        
+        $task = \Sinevia\Tasks\Models\Task::find($taskId);
+
+        if (is_null($task)) {
+            return json_encode(['status' => 'error', 'message' => 'Task not found']);
+        }
+        
+        if ($task->Status != \Sinevia\Tasks\Models\Task::STATUS_ACTIVE) {
+            return json_encode(['status' => 'error', 'message' => 'Task not active']);
+        }
+        
+        if ($parameters == "") {
+            return json_encode(['status' => 'error', 'message' => 'Parameters is required field']);
+        }
+
+        if (\Sinevia\StringUtils::isJson($parameters) == false) {
+            return json_encode(['status' => 'error', 'message' => 'Parameters is not valid JSON']);
+        }
+        
+
+        $isSuccess = \Sinevia\Tasks\Models\Queue::enqueueTaskById($taskId, json_decode($parameters, true));
+
+        if ($isSuccess) {
+            return json_encode(['status' => 'success', 'message' => 'Task enqueued']);
+        }
+
+        return json_encode(['status' => 'error', 'message' => 'Task faied to be enqueued']);
+    }
 
     function anyTaskUpdateAjax() {
         $taskId = request('TaskId');
@@ -143,6 +175,7 @@ class TasksController extends \Illuminate\Routing\Controller {
 
         $title = request('Title');
         $alias = request('Alias');
+        $status = request('Status');
         $description = request('Description');
 
         if ($title == "") {
@@ -155,7 +188,8 @@ class TasksController extends \Illuminate\Routing\Controller {
 
         $task->Title = $title;
         $task->Alias = $alias;
-        $task->Description = $description;
+        $task->Description = $description;        
+        $task->Status = $status;
 
         $isSuccess = $task->save();
 
@@ -165,6 +199,9 @@ class TasksController extends \Illuminate\Routing\Controller {
 
         return json_encode(['status' => 'error', 'message' => 'Task faied to be updated']);
     }
+    
+    
+    
 
     function anyQueueTaskDeleteAjax() {
         $queuedTaskId = request('QueuedTaskId');

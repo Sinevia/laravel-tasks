@@ -33,7 +33,8 @@ class Queue extends BaseModel {
             $message = json_encode($message);
         }
 
-        $details = $this->Details;
+        $newInstance = $this->fresh();
+        $details = $newInstance->Details;
         $newDetails = $details . "\n" . date('Y-m-d H:i:s') . ' : ' . $message;
         $this->Details = $newDetails;
         $this->save();
@@ -156,18 +157,22 @@ class Queue extends BaseModel {
         return $queuedTask;
     }
     
+    /**
+     * Enqueues a task by alias and reqturns the queued instance.
+     * If a task with the alias does not exist will throw a RuntimeException
+     */
     public static function enqueueTaskByAlias($taskAlias, $parameters = []){
         $task = Task::whereAlias(trim($taskAlias))->first();
         
-        if($task==null){
-            return null;
+        if ($task == null) {
+            throw new \RuntimeException('Task with alias "' . $taskAlias . '" COULD NOT be found');
         }
         
         return self::enqueueTaskById($task->Id, $parameters);
     }
 
     /**
-     * Queues a task by ID and returns the queued instance
+     * Enqueues a task by ID and returns the queued instance
      */
     public static function enqueueTaskById($taskId, $parameters = []) {
         $queuedTask = new self;
