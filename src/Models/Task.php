@@ -39,7 +39,7 @@ class Task extends BaseModel {
                         $table->engine = 'InnoDB';
                         $table->string($o->primaryKey, 40)->primary();
                         $table->enum('Status', $statusKeys)->default($o::STATUS_DISABLED);
-                        $table->string('Alias', 50)->comment('Human readable short name, will be displayed in the queue table');
+                        $table->string('Alias', 255)->comment('Human readable short name, will be displayed in the queue table');
                         $table->string('Title', 255)->comment('Title of the task');
                         $table->text('Description')->nullable()->comment('Description of what the task does');
                         $table->text('Memo')->nullable()->comment('Reminder notes related to the task');
