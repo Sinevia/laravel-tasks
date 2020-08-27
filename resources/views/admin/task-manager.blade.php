@@ -126,21 +126,21 @@
                         <?php echo $t->Status; ?><br>
                     </td>
                     <td style="text-align:center;vertical-align: middle;">
-                        <button class="btn btn-sm btn-info" onclick="showTaskUpdateModal('<?php echo $t->Id; ?>');" title="Details">
-                            <i class="fas fa-edit"></i>
+                        <button class="btn btn-sm btn-info" onclick="showTaskUpdateModal('<?php echo $t->Id; ?>');" title="Edit">
+                            Edit
                         </button>
-                        <button class="btn btn-sm btn-info" onclick="showTaskEnqueueModal('<?php echo $t->Id; ?>');" title="Enque">
-                            <span class="fas fa-play"></span>
+                        <button class="btn btn-sm btn-info" onclick="showTaskEnqueueModal('<?php echo $t->Id; ?>');" title="Enqueue">
+                            Enqueue
                         </button>
                         <?php if ($t->Status == 'Deleted') { ?>
                             <button class="btn btn-sm btn-danger" onclick="showTaskDeleteModal('<?php echo $t->Id; ?>');" title="Delete">
-                                <i class="fas fa-minus-circle"></i>
+                                Delete
                             </button>
                         <?php } ?>
 
                         <?php if ($t->Status != 'Deleted') { ?>
                             <button class="btn btn-sm btn-danger" onclick="showTaskDeleteModal('<?php echo $t->Id; ?>');" title="Trash">
-                                <i class="fas fa-trash"></i>
+                                Trash
                             </button>
                         <?php } ?>
                     </td>
