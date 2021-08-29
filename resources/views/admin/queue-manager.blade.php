@@ -7,10 +7,6 @@
 @section('webpage_header')
 <h1>
     Queue Manager
-    <button type="button" class="btn btn-primary float-right" onclick="showPageCreateModal();">
-        <span class="fas fa-plus-sign"></span>
-        Enqueue Task
-    </button>
 </h1>
 <ol class="breadcrumb">
     <li class="breadcrumb-item">
