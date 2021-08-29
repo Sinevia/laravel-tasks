@@ -62,6 +62,8 @@ class TasksController extends \Illuminate\Routing\Controller {
         $query = $query->orderBy($orderby, $sort);
         $queuedTasks = $query->paginate(20);
 
+        $fetchLinksAjaxUrl = \Sinevia\Tasks\Helpers\Links::fetchTasksAjax();
+
         return view('tasks::admin/queue-manager', get_defined_vars());
     }
 
@@ -132,21 +134,21 @@ class TasksController extends \Illuminate\Routing\Controller {
 
         return json_encode(['status' => 'error', 'message' => 'Task faied to be deleted']);
     }
-    
+
     function anyTaskEnqueueAjax() {
         $taskId = request('TaskId');
         $parameters = trim(request('Parameters'));
-        
+
         $task = \Sinevia\Tasks\Models\Task::find($taskId);
 
         if (is_null($task)) {
             return json_encode(['status' => 'error', 'message' => 'Task not found']);
         }
-        
+
         if ($task->Status != \Sinevia\Tasks\Models\Task::STATUS_ACTIVE) {
             return json_encode(['status' => 'error', 'message' => 'Task not active']);
         }
-        
+
         if ($parameters == "") {
             return json_encode(['status' => 'error', 'message' => 'Parameters is required field']);
         }
@@ -154,7 +156,7 @@ class TasksController extends \Illuminate\Routing\Controller {
         if (\Sinevia\StringUtils::isJson($parameters) == false) {
             return json_encode(['status' => 'error', 'message' => 'Parameters is not valid JSON']);
         }
-        
+
 
         $isSuccess = \Sinevia\Tasks\Models\Queue::enqueueTaskById($taskId, json_decode($parameters, true));
 
@@ -188,7 +190,7 @@ class TasksController extends \Illuminate\Routing\Controller {
 
         $task->Title = $title;
         $task->Alias = $alias;
-        $task->Description = $description;        
+        $task->Description = $description;
         $task->Status = $status;
 
         $isSuccess = $task->save();
@@ -199,9 +201,6 @@ class TasksController extends \Illuminate\Routing\Controller {
 
         return json_encode(['status' => 'error', 'message' => 'Task faied to be updated']);
     }
-    
-    
-    
 
     function anyQueueTaskDeleteAjax() {
         $queuedTaskId = request('QueuedTaskId');
@@ -218,6 +217,66 @@ class TasksController extends \Illuminate\Routing\Controller {
         }
 
         return json_encode(['status' => 'error', 'message' => 'Queued task faied to be deleted']);
+    }
+
+    function anyQueueTasksFetchAjax() {
+        $view = request('view');
+        $session_order_by = \Session::get('tasks_queue_manager_by', 'CreatedAt');
+        $session_order_sort = \Session::get('tasks_queue_manager_sort', 'DESC');
+        $orderby = request('by', $session_order_by);
+        $sort = request('sort', $session_order_sort);
+        $page = request('page', 0);
+        $results_per_page = 20;
+        \Session::put('tasks_queue_manager_by', $orderby); // Keep for session
+        \Session::put('tasks_queue_manager_sort', $sort);  // Keep for session
+
+        $filterStatus = request('filter_status', '');
+        $filterSearch = request('filter_search', '');
+        if ($view == 'trash') {
+            $filterStatus = 'Deleted';
+        }
+        if ($filterStatus == 'Deleted') {
+            $view = 'trash';
+        }
+
+        $query = \Sinevia\Tasks\Models\Queue::getModel();
+        $query = $query->orderBy($orderby, $sort);
+        $queuedTasks = $query->paginate(20)->map(function($record) {
+                    $taskName = is_null($record->task) ? 'n/a' : $record->task->Title;
+                    $createdAtTime = trim($record->CreatedAt);
+                    $startedAtTime = trim($record->StartedAt);
+                    $completedAtTime = trim($record->CompletedAt);
+                    $elapsedTime = 'n/a';
+                    if ($startedAtTime != "" AND $startedAtTime != "") {
+                        $elapsedTime = strtotime($completedAtTime) - strtotime($startedAtTime);
+                    }
+                    if ($completedAtTime != "") {
+                        $completedAt = date('H:i:s', strtotime($completedAtTime));
+                    } else {
+                        $completedAt = 'n/a';
+                    }
+                    if ($startedAtTime != "") {
+                        $startedAt = date('H:i:s', strtotime($startedAtTime));
+                    } else {
+                        $startedAt = 'n/a';
+                    }
+                    if ($createdAtTime != "") {
+                        $createdAt = date('Y-m-d H:i:s', strtotime($createdAtTime));
+                    } else {
+                        $createdAt = 'n/a';
+                    }
+                    return[
+                        'id' => $record->Id,
+                        'task_name' => $taskName,
+                        'status' => $record->Status,
+                        'created_at' => $createdAt,
+                        'started_at' => $startedAt,
+                        'elapsed_time' => $elapsedTime,
+                        'completed_at' => $completedAt,
+                    ];
+                })->toArray();
+
+        return response()->json(['status' => 'success', 'message' => 'Tasks listed', 'data' => ['tasks' => $queuedTasks]]);
     }
 
     function anyQueueTaskDetailsAjax() {
