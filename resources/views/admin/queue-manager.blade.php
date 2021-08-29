@@ -162,6 +162,60 @@
         <br />
 
     </div>
+    <div class="card-footer">
+        <!-- START: Pagination -->
+        <template v-if="records!=null && records.length > 0">
+            Rows per page:
+            <div class="btn-group btn-perpage" role="group">
+                <button id="btnGroupDrop1" type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {% recordsPerPage %}
+                </button>
+                <div class="dropdown-menu">
+                    <template v-for="value in [10,25,50,100,200,300,400,500]">
+                        <button type="button" class="dropdown-item" v-on:click="paginationPerPageChanged(value)">
+                            {% value %}
+                        </button>
+                    </template>
+                </div>
+            </div>
+            &nbsp;
+            Page:
+            <div style="display:inline-block">                
+                <div class="pagination" _v-if="Math.ceil(dataRowsTotal/dataRowsPerPage)>1">
+                    <span v-on:click="paginationPrevClicked()"
+                          v-if="recordsCurrentPage>0"
+                          class="page-item disabled"
+                          style="cursor:pointer;"
+                          >
+                        <span class="page-link">
+                            ‹
+                        </span>
+                    </span>
+                    <div class="btn-group btn-perpage" role="group">
+                        <button id="btnGroupDrop1" type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {% (parseInt(recordsCurrentPage)+1) %}
+                        </button>
+                        <div class="dropdown-menu" style="max-height:200px;overflow: auto;">
+                            <template v-for="(page, index) in Math.ceil(recordsTotal/recordsPerPage)">
+                                <button type="button" class="dropdown-item" v-on:click="paginationPageClicked((page-1))">
+                                    {% parseInt(page) %}
+                                </button>
+                            </template>
+                        </div>
+                    </div>
+                    <span v-on:click="paginationNextClicked()"
+                          style="cursor:pointer;"
+                          class="page-item disabled"
+                          >
+                        <span class="page-link">
+                            ›
+                        </span>
+                    </span>
+                </div>
+            </div>
+        </template>
+        <!-- END: Pagination -->
+    </div>
 
 
     @include('tasks::admin.queue-task-delete-modal')
@@ -184,7 +238,10 @@
                     title: ""
                 },
                 records: null,
-                recordsLoading: null
+                recordsLoading: null,
+                recordsTotal: 0,
+                recordsPerPage: 20,
+                recordsCurrentPage: 0, // the page number cusrrently displayed
             };
         },
         mounted() {
@@ -343,9 +400,13 @@
             recordsFetch() {
                 this.recordsLoading = true;
                 this.records = null;
-                $.get($fetchLinksAjaxUrl, {}).then((response) => {
+                $.get($fetchLinksAjaxUrl, {
+                    page: this.recordsCurrentPage,
+                    per_page: this.recordsPerPage,
+                }).then((response) => {
                     if (response.status === "success") {
                         this.records = response.data.tasks;
+                        this.recordsTotal = response.data.total;
                         return true;
                     }
 
@@ -355,7 +416,28 @@
                 }).always(() => {
                     this.recordsLoading = false;
                 });
-            }
+            },
+            paginationNextClicked() {
+                if (this.recordsCurrentPage < Math.ceil(this.recordsTotal / this.recordsPerPage) - 1) {
+                    this.recordsCurrentPage++;
+                }
+                this.recordsFetch();
+            },
+            paginationPageClicked(page) {
+                this.recordsCurrentPage = page;
+                this.recordsFetch();
+            },
+            paginationPrevClicked() {
+                if (this.recordsCurrentPage > 0) {
+                    this.recordsCurrentPage--;
+                }
+                this.recordsFetch();
+            },
+            paginationPerPageChanged(perPage) {
+                this.recordsCurrentPage = 0;
+                this.recordsPerPage = perPage;
+                this.recordsFetch();
+            },
         }
     };
 
