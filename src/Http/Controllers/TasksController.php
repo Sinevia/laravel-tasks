@@ -226,7 +226,7 @@ class TasksController extends \Illuminate\Routing\Controller {
         $orderby = request('by', $session_order_by);
         $sort = request('sort', $session_order_sort);
         $page = request('page', 0);
-        $results_per_page = 20;
+        $results_per_page = request('per_page', 20);
         \Session::put('tasks_queue_manager_by', $orderby); // Keep for session
         \Session::put('tasks_queue_manager_sort', $sort);  // Keep for session
 
@@ -241,6 +241,7 @@ class TasksController extends \Illuminate\Routing\Controller {
 
         $query = \Sinevia\Tasks\Models\Queue::getModel();
         $query = $query->orderBy($orderby, $sort);
+        $queuedTasksTotal = $query->count();
         $queuedTasks = $query->paginate(20)->map(function($record) {
                     $taskName = is_null($record->task) ? 'n/a' : $record->task->Title;
                     $createdAtTime = trim($record->CreatedAt);
@@ -276,7 +277,10 @@ class TasksController extends \Illuminate\Routing\Controller {
                     ];
                 })->toArray();
 
-        return response()->json(['status' => 'success', 'message' => 'Tasks listed', 'data' => ['tasks' => $queuedTasks]]);
+        return response()->json(['status' => 'success', 'message' => 'Tasks listed', 'data' => [
+                        'tasks' => $queuedTasks,
+                        'total' => $queuedTasksTotal,
+        ]]);
     }
 
     function anyQueueTaskDetailsAjax() {
