@@ -18,9 +18,13 @@ class Task extends BaseModel {
         $task = Task::where('Alias',$alias)->first();
         $id = \Sinevia\Uid::microUid();
         
+        if (is_null($task)) {
+            throw new \RuntimeException("Task with alias $alias DOES NOT exist");
+        }
+        
         $queuedTask = new Queue;
         $queuedTask->Id = $id;
-        $queuedTask->TaskId = is_null($task) ? '' : $task->Id;
+        $queuedTask->TaskId = $task->Id;
         $queuedTask->Status = Queue::STATUS_QUEUED;
         $queuedTask->Parameters = json_encode($parameters);
         $queuedTask->Attempts = 0;
