@@ -61,5 +61,44 @@ class Task extends BaseModel {
         $o = new self;
         return \Schema::connection($o->connection)->drop($o->table);
     }
+    
+    
+    public function getAlias(): string {
+        return $this->Alias;
+    }
+    
+    public function getDescription(): string {
+        return $this->Description;
+    }
+    
+    public function getId(): string {
+        return $this->Id;
+    }
+    
+    public function getStatus(): string {
+        return $this->Status;
+    }
+    
+    public function getTitle(): string {
+        return $this->Title;
+    }
+    
+    public function getMemo(): string {
+        return $this->Memo;
+    }
+    
+    public function getCreatedAt(): string {
+        return $this->CreatedAt;
+    }
+    
+    public function getUpdatedAt(): string {
+        return $this->UpdatedAt;
+    }
+    
+    public function getDeletedAt(): string {
+        return $this->DeletedAt;
+    }
+    
+    
 
 }
