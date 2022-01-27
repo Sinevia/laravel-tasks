@@ -41,6 +41,10 @@ class Queue extends BaseModel {
         //$newDetails = "\n" . date('Y-m-d H:i:s') . ' : ' . $message;        
         //file_put_contents(storage_path('logs/' . $this->Details), $newDetails, FILE_APPEND);
     }
+    
+    public function getAttempts(): string {
+        return $this->Attempts;
+    }
 
     public function getChain() {
         $batchId = $this->getParameter('batch');
@@ -65,41 +69,12 @@ class Queue extends BaseModel {
         return array_values($chain);
     }
 
-    public function isChainSuccess() {
-        $chain = $this->getChain();
-        foreach ($chain as $task) {
-            if ($task->Status != 'Success') {
-                return false;
-            }
-        }
-        return true;
+    public function getCompletedAt(): string {
+        return $this->CompletedAt;
     }
 
-    public function getParameters() {
-        $parameters = json_decode($this->Parameters, true);
-        if ($parameters == false) {
-            return [];
-        }
-        return $parameters;
-    }
-
-    public function setParameter($key, $value) {
-        $parameters = $this->getParameters();
-        $parameters[$key] = $value;
-        $this->setParameters($parameters);
-    }
-
-    public function setParameters($parameters) {
-        $this->Parameters = json_encode($parameters, JSON_PRETTY_PRINT);
-        $this->save();
-    }
-
-    public function getParameter($key) {
-        $parameters = $this->getParameters();
-        if (isset($parameters[$key])) {
-            return $parameters[$key];
-        }
-        return null;
+    public function getId(): string {
+        return $this->Id;
     }
 
     public function getOutput() {
@@ -125,13 +100,53 @@ class Queue extends BaseModel {
         $this->setOutput($output);
     }
 
-    public function fail($message = 'Failed') {
-        if ($message != null) {
-            $this->appendDetails($message);
+    public function getParameter($key) {
+        $parameters = $this->getParameters();
+        if (isset($parameters[$key])) {
+            return $parameters[$key];
         }
-        $this->Status = 'Failed';
-        $this->CompletedAt = date('Y-m-d H:i:s');
+        return null;
+    }
+
+    public function setParameter($key, $value) {
+        $parameters = $this->getParameters();
+        $parameters[$key] = $value;
+        $this->setParameters($parameters);
+    }
+
+    public function getParameters() {
+        $parameters = json_decode($this->Parameters, true);
+        if ($parameters == false) {
+            return [];
+        }
+        return $parameters;
+    }
+
+    public function setParameters($parameters) {
+        $this->Parameters = json_encode($parameters, JSON_PRETTY_PRINT);
         $this->save();
+    }
+
+    public function getStatus(): string {
+        return $this->Status;
+    }
+
+    public function getTaskId(): string {
+        return $this->TaskId;
+    }
+
+    public function getStartedAt(): string {
+        return $this->StartedAt;
+    }
+
+    public function isChainSuccess() {
+        $chain = $this->getChain();
+        foreach ($chain as $task) {
+            if ($task->Status != 'Success') {
+                return false;
+            }
+        }
+        return true;
     }
 
     public function complete($message = 'Success') {
@@ -139,6 +154,15 @@ class Queue extends BaseModel {
             $this->appendDetails($message);
         }
         $this->Status = 'Success';
+        $this->CompletedAt = date('Y-m-d H:i:s');
+        $this->save();
+    }
+
+    public function fail($message = 'Failed') {
+        if ($message != null) {
+            $this->appendDetails($message);
+        }
+        $this->Status = 'Failed';
         $this->CompletedAt = date('Y-m-d H:i:s');
         $this->save();
     }
@@ -156,18 +180,18 @@ class Queue extends BaseModel {
         $queuedTask->save();
         return $queuedTask;
     }
-    
+
     /**
      * Enqueues a task by alias and reqturns the queued instance.
      * If a task with the alias does not exist will throw a RuntimeException
      */
-    public static function enqueueTaskByAlias($taskAlias, $parameters = []){
+    public static function enqueueTaskByAlias($taskAlias, $parameters = []) {
         $task = Task::whereAlias(trim($taskAlias))->first();
-        
+
         if ($task == null) {
             throw new \RuntimeException('Task with alias "' . $taskAlias . '" COULD NOT be found');
         }
-        
+
         return self::enqueueTaskById($task->Id, $parameters);
     }
 
