@@ -69,7 +69,7 @@
                         <th>
                             Elapsed Time
                         </th>
-                        <th style="text-align:center;width:100px;">
+                        <th style="text-align:center;width:130px;">
                             Status
                         </th>
                         <th style="text-align:center;width:180px;">
@@ -103,8 +103,7 @@
                         </td>
                         <td style="text-align:center;vertical-align: middle;">
                             <select v-model="record.status" v-on:change="queuedTaskStatusChanged(record.id)"
-                                    class="form-control form-control-sm"
-                                    style="width:100px;">
+                                    class="form-control form-control-sm">
                                 <option>- select -</option>
                                 <?php foreach (\Sinevia\Tasks\Models\Queue::$statusList as $key => $value) { ?>
                                     <option value="<?= $key ?>">
@@ -274,12 +273,10 @@
                     // DEBUG: console.log(response)
                     if (response.status === 'success') {
                         $('#ModalQueueTaskDelete').modal('hide');
-                        //window.location.href = window.location.href;
                         return this.recordsFetch();
                     } else {
                         alert(response.message);
                         $('#ModalQueueTaskDelete').modal('hide');
-                        //window.location.href = window.location.href;
                         return this.recordsFetch();
                     }
                 }).fail(() => {
