@@ -72,10 +72,10 @@ class TasksController extends \Illuminate\Routing\Controller {
         $task = \Sinevia\Tasks\Models\Task::find($taskId);
 
         if (is_null($task)) {
-            return json_encode(['status' => 'error', 'message' => 'Task not found']);
+            return response()->json(['status' => 'error', 'message' => 'Task not found']);
         }
 
-        return json_encode([
+        return response()->json([
             'status' => 'success',
             'message' => 'Task found',
             'data' => [
@@ -94,15 +94,15 @@ class TasksController extends \Illuminate\Routing\Controller {
         $taskWithAias = \Sinevia\Tasks\Models\Task::whereAlias($alias)->first();
 
         if ($title == "") {
-            return json_encode(['status' => 'error', 'message' => 'Title is required field']);
+            return response()->json(['status' => 'error', 'message' => 'Title is required field']);
         }
 
         if ($alias == "") {
-            return json_encode(['status' => 'error', 'message' => 'Alias is required field']);
+            return response()->json(['status' => 'error', 'message' => 'Alias is required field']);
         }
 
         if ($taskWithAias != null) {
-            return json_encode(['status' => 'error', 'message' => 'The alias already exists']);
+            return response()->json(['status' => 'error', 'message' => 'The alias already exists']);
         }
 
         $task = new \Sinevia\Tasks\Models\Task;
@@ -112,10 +112,10 @@ class TasksController extends \Illuminate\Routing\Controller {
         $isSuccess = $task->save();
 
         if ($isSuccess) {
-            return json_encode(['status' => 'success', 'message' => 'Task created successfully']);
+            return response()->json(['status' => 'success', 'message' => 'Task created successfully']);
         }
 
-        return json_encode(['status' => 'error', 'message' => 'Task faied to be created']);
+        return response()->json(['status' => 'error', 'message' => 'Task faied to be created']);
     }
 
     function anyTaskDeleteAjax() {
@@ -123,16 +123,16 @@ class TasksController extends \Illuminate\Routing\Controller {
         $task = \Sinevia\Tasks\Models\Task::find($taskId);
 
         if (is_null($task)) {
-            return json_encode(['status' => 'error', 'message' => 'Task not found']);
+            return response()->json(['status' => 'error', 'message' => 'Task not found']);
         }
 
         $isSuccess = $task->delete();
 
         if ($isSuccess) {
-            return json_encode(['status' => 'success', 'message' => 'Task deleted']);
+            return response()->json(['status' => 'success', 'message' => 'Task deleted']);
         }
 
-        return json_encode(['status' => 'error', 'message' => 'Task faied to be deleted']);
+        return response()->json(['status' => 'error', 'message' => 'Task faied to be deleted']);
     }
 
     function anyTaskEnqueueAjax() {
@@ -142,29 +142,29 @@ class TasksController extends \Illuminate\Routing\Controller {
         $task = \Sinevia\Tasks\Models\Task::find($taskId);
 
         if (is_null($task)) {
-            return json_encode(['status' => 'error', 'message' => 'Task not found']);
+            return response()->json(['status' => 'error', 'message' => 'Task not found']);
         }
 
         if ($task->Status != \Sinevia\Tasks\Models\Task::STATUS_ACTIVE) {
-            return json_encode(['status' => 'error', 'message' => 'Task not active']);
+            return response()->json(['status' => 'error', 'message' => 'Task not active']);
         }
 
         if ($parameters == "") {
-            return json_encode(['status' => 'error', 'message' => 'Parameters is required field']);
+            return response()->json(['status' => 'error', 'message' => 'Parameters is required field']);
         }
 
         if (\Sinevia\StringUtils::isJson($parameters) == false) {
-            return json_encode(['status' => 'error', 'message' => 'Parameters is not valid JSON']);
+            return response()->json(['status' => 'error', 'message' => 'Parameters is not valid JSON']);
         }
 
 
         $isSuccess = \Sinevia\Tasks\Models\Queue::enqueueTaskById($taskId, json_decode($parameters, true));
 
         if ($isSuccess) {
-            return json_encode(['status' => 'success', 'message' => 'Task enqueued']);
+            return response()->json(['status' => 'success', 'message' => 'Task enqueued']);
         }
 
-        return json_encode(['status' => 'error', 'message' => 'Task faied to be enqueued']);
+        return response()->json(['status' => 'error', 'message' => 'Task faied to be enqueued']);
     }
 
     function anyTaskUpdateAjax() {
@@ -172,7 +172,7 @@ class TasksController extends \Illuminate\Routing\Controller {
         $task = \Sinevia\Tasks\Models\Task::find($taskId);
 
         if (is_null($task)) {
-            return json_encode(['status' => 'error', 'message' => 'Task not found']);
+            return response()->json(['status' => 'error', 'message' => 'Task not found']);
         }
 
         $title = request('Title');
@@ -181,11 +181,11 @@ class TasksController extends \Illuminate\Routing\Controller {
         $description = request('Description');
 
         if ($title == "") {
-            return json_encode(['status' => 'error', 'message' => 'Title is required field']);
+            return response()->json(['status' => 'error', 'message' => 'Title is required field']);
         }
 
         if ($alias == "") {
-            return json_encode(['status' => 'error', 'message' => 'Alias is required field']);
+            return response()->json(['status' => 'error', 'message' => 'Alias is required field']);
         }
 
         $task->Title = $title;
@@ -196,10 +196,10 @@ class TasksController extends \Illuminate\Routing\Controller {
         $isSuccess = $task->save();
 
         if ($isSuccess) {
-            return json_encode(['status' => 'success', 'message' => 'Task updated successfully']);
+            return response()->json(['status' => 'success', 'message' => 'Task updated successfully']);
         }
 
-        return json_encode(['status' => 'error', 'message' => 'Task faied to be updated']);
+        return response()->json(['status' => 'error', 'message' => 'Task faied to be updated']);
     }
 
     function anyQueueTaskDeleteAjax() {
@@ -213,10 +213,10 @@ class TasksController extends \Illuminate\Routing\Controller {
         $isSuccess = $queuedTask->delete();
 
         if ($isSuccess) {
-            return json_encode(['status' => 'success', 'message' => 'Queued task deleted']);
+            return response()->json(['status' => 'success', 'message' => 'Queued task deleted']);
         }
 
-        return json_encode(['status' => 'error', 'message' => 'Queued task faied to be deleted']);
+        return response()->json(['status' => 'error', 'message' => 'Queued task faied to be deleted']);
     }
 
     function anyQueueTasksFetchAjax() {
@@ -288,10 +288,10 @@ class TasksController extends \Illuminate\Routing\Controller {
         $queuedTask = \Sinevia\Tasks\Models\Queue::find($queuedTaskId);
 
         if (is_null($queuedTask)) {
-            return json_encode(['status' => 'error', 'message' => 'Task not found']);
+            return response()->json(['status' => 'error', 'message' => 'Task not found']);
         }
 
-        return json_encode(['status' => 'success', 'message' => 'Task found', 'data' => ['Details' => $queuedTask->Details]]);
+        return response()->json(['status' => 'success', 'message' => 'Task found', 'data' => ['Details' => $queuedTask->Details]]);
     }
 
     function anyQueueTaskParametersAjax() {
@@ -299,10 +299,10 @@ class TasksController extends \Illuminate\Routing\Controller {
         $queuedTask = \Sinevia\Tasks\Models\Queue::find($queuedTaskId);
 
         if (is_null($queuedTask)) {
-            return json_encode(['status' => 'error', 'message' => 'Task not found']);
+            return response()->json(['status' => 'error', 'message' => 'Task not found']);
         }
 
-        return json_encode(['status' => 'success', 'message' => 'Task found', 'data' => ['Parameters' => $queuedTask->Parameters]]);
+        return response()->json(['status' => 'success', 'message' => 'Task found', 'data' => ['Parameters' => $queuedTask->Parameters]]);
     }
 
     function anyQueueTaskRequeueAjax() {
@@ -311,28 +311,28 @@ class TasksController extends \Illuminate\Routing\Controller {
         $queuedTask = \Sinevia\Tasks\Models\Queue::find($queuedTaskId);
 
         if (is_null($queuedTask)) {
-            return json_encode(['status' => 'error', 'message' => 'Queued task not found']);
+            return response()->json(['status' => 'error', 'message' => 'Queued task not found']);
         }
 
         if ($parameters == "") {
-            return json_encode(['status' => 'error', 'message' => 'Parameters is required field']);
+            return response()->json(['status' => 'error', 'message' => 'Parameters is required field']);
         }
 
         if (\Sinevia\StringUtils::isJson($parameters) == false) {
-            return json_encode(['status' => 'error', 'message' => 'Parameters is not valid JSON']);
+            return response()->json(['status' => 'error', 'message' => 'Parameters is not valid JSON']);
         }
 
         if ($queuedTask->task == null) {
-            return json_encode(['status' => 'error', 'message' => 'Task not found']);
+            return response()->json(['status' => 'error', 'message' => 'Task not found']);
         }
 
         $isSuccess = \Sinevia\Tasks\Models\Queue::enqueueTaskById($queuedTask->task->Id, json_decode($parameters, true));
 
         if ($isSuccess) {
-            return json_encode(['status' => 'success', 'message' => 'Task requeued']);
+            return response()->json(['status' => 'success', 'message' => 'Task requeued']);
         }
 
-        return json_encode(['status' => 'error', 'message' => 'Task faied to be requeued']);
+        return response()->json(['status' => 'error', 'message' => 'Task faied to be requeued']);
     }
     
     function anyQueueTaskUpdateAjax() {
@@ -341,11 +341,11 @@ class TasksController extends \Illuminate\Routing\Controller {
         $queuedTask = \Sinevia\Tasks\Models\Queue::find($queuedTaskId);
 
         if (is_null($queuedTask)) {
-            return json_encode(['status' => 'error', 'message' => 'Queued task not found']);
+            return response()->json(['status' => 'error', 'message' => 'Queued task not found']);
         }
 
         if ($status == "") {
-            return json_encode(['status' => 'error', 'message' => 'Status is required field']);
+            return response()->json(['status' => 'error', 'message' => 'Status is required field']);
         }
         
         $queuedTask->Status = $status;
@@ -353,10 +353,10 @@ class TasksController extends \Illuminate\Routing\Controller {
         $isSuccess = $queuedTask->save();
 
         if ($isSuccess) {
-            return json_encode(['status' => 'success', 'message' => 'Queued task saved']);
+            return response()->json(['status' => 'success', 'message' => 'Queued task saved']);
         }
 
-        return json_encode(['status' => 'error', 'message' => 'Queued task faied to be saved']);
+        return response()->json(['status' => 'error', 'message' => 'Queued task faied to be saved']);
     }
 
 }
