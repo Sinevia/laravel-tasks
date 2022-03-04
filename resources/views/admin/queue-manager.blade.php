@@ -102,7 +102,16 @@
                             {% record.elapsed_time %}
                         </td>
                         <td style="text-align:center;vertical-align: middle;">
-                            {% record.status %}
+                            <select v-model="record.status" v-on:change="queuedTaskStatusChanged(record.id)"
+                                    class="form-control form-control-sm"
+                                    style="width:100px;">
+                                <option>- select -</option>
+                                <?php foreach (\Sinevia\Tasks\Models\Queue::$statusList as $key => $value) { ?>
+                                    <option value="<?= $key ?>">
+                                        <?= $value ?>
+                                    </option>
+                                <?php } ?>
+                            </select>
                         </td>
                         <td style="text-align:center;vertical-align: middle;">
                             <button class="btn btn-sm btn-success" v-on:click="showTaskParametersModal(record.id);" title="Parameters">
@@ -243,6 +252,9 @@
         mounted() {
             setTimeout(() => {
                 $(() => this.recordsFetch());
+                setInterval(() => {
+                    this.recordsFetch();
+                }, 30000);
             }, 2000);
         },
         methods: {
@@ -342,6 +354,7 @@
                     alert('Getting parameters failed');
                 });
             },
+            
             taskRequeue() {
                 var taskId = $('#ModalTaskRequeue input[name=QueuedTaskId]').val();
                 var parameters = $('#ModalTaskRequeue textarea[name=Parameters]').val();
@@ -368,7 +381,35 @@
                 });
                 window.autoreload = true;
             },
+            
+            queuedTaskStatusChanged(taskId) {
+                var record = this.records.find(record => {
+                    return record.id === taskId;
+                });
 
+                if (record === null) {
+                    return false;
+                }
+                
+                var url = '<?php echo action('\Sinevia\Tasks\Http\Controllers\TasksController@anyQueueTaskUpdateAjax'); ?>?QueuedTaskId=' + taskId;
+
+                $.get(url, {
+                    QueuedTaskId: taskId,
+                    Status: record.status
+                }).then((response) => {
+                    console.log(response);
+                    if (response.status === "success") {
+                        this.recordsFetch();
+                        return true;
+                    }
+
+                    Swal.fire({title: 'Error!', text: response.message, icon: 'error', heightAuto: false});
+                }).fail(() => {
+                    Swal.fire({title: 'Error!', text: "Sorry there was an IO error, please visit this page later", icon: 'error', heightAuto: false});
+                }).always(() => {
+                    this.recordsLoading = false;
+                });
+            },
             /**
              * Deletes a record
              */
