@@ -229,7 +229,8 @@
 </div>
 
 <script>const $fetchLinksAjaxUrl = <?= json_encode($fetchLinksAjaxUrl) ?></script>
-<script src="https://unpkg.com/vue@next"></script>
+
+<script src="https://unpkg.com/vue@3"></script>
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     //const page = getUrlParam("page", "");
@@ -273,9 +274,10 @@
                     // DEBUG: console.log(response)
                     if (response.status === 'success') {
                         $('#ModalQueueTaskDelete').modal('hide');
+                        Swal.fire({position: 'top-end', icon: 'success', text: 'queued task deleted', showConfirmButton: false, toast: true, timer: 3500});
                         return this.recordsFetch();
                     } else {
-                        alert(response.message);
+                        Swal.fire({position: 'top-end', icon: 'success', text: response.message, showConfirmButton: false, toast: true, timer: 3500});
                         $('#ModalQueueTaskDelete').modal('hide');
                         return this.recordsFetch();
                     }
@@ -351,7 +353,7 @@
                     alert('Getting parameters failed');
                 });
             },
-            
+
             taskRequeue() {
                 var taskId = $('#ModalTaskRequeue input[name=QueuedTaskId]').val();
                 var parameters = $('#ModalTaskRequeue textarea[name=Parameters]').val();
@@ -378,7 +380,7 @@
                 });
                 window.autoreload = true;
             },
-            
+
             queuedTaskStatusChanged(taskId) {
                 var record = this.records.find(record => {
                     return record.id === taskId;
@@ -387,7 +389,7 @@
                 if (record === null) {
                     return false;
                 }
-                
+
                 var url = '<?php echo action('\Sinevia\Tasks\Http\Controllers\TasksController@anyQueueTaskUpdateAjax'); ?>?QueuedTaskId=' + taskId;
 
                 $.get(url, {
@@ -396,37 +398,40 @@
                 }).then((response) => {
                     console.log(response);
                     if (response.status === "success") {
+                        Swal.fire({position: 'top-end', icon: 'success', text: 'status changed', showConfirmButton: false, toast: true, timer: 3500});
                         this.recordsFetch();
                         return true;
                     }
 
-                    Swal.fire({title: 'Error!', text: response.message, icon: 'error', heightAuto: false});
+                    Swal.fire({position: 'top-end', icon: 'error', text: 'status change failed', showConfirmButton: false, toast: true, timer: 3500});
                 }).fail(() => {
-                    Swal.fire({title: 'Error!', text: "Sorry there was an IO error, please visit this page later", icon: 'error', heightAuto: false});
+                    Swal.fire({position: 'top-end', icon: 'error', text: 'Sorry there was an IO error', showConfirmButton: false, toast: true, timer: 3500});
                 }).always(() => {
                     this.recordsLoading = false;
                 });
             },
+                    
             /**
              * Deletes a record
              */
-            recordDelete(recordId) {
-                $.get('/crud/record-delete-ajax', {
-                    record_id: recordId
-                }).then((response) => {
-                    console.log(response);
-                    if (response.status === "success") {
-                        this.recordsFetch();
-                        return true;
-                    }
-
-                    Swal.fire({title: 'Error!', text: response.message, icon: 'error', heightAuto: false});
-                }).fail(() => {
-                    Swal.fire({title: 'Error!', text: "Sorry there was an IO error, please visit this page later", icon: 'error', heightAuto: false});
-                }).always(() => {
-                    this.recordsLoading = false;
-                });
-            },
+//            recordDelete(recordId) {
+//                $.get('/crud/record-delete-ajax', {
+//                    record_id: recordId
+//                }).then((response) => {
+//                    console.log(response);
+//                    if (response.status === "success") {
+//                        Swal.fire({position: 'top-end', icon: 'success', text: 'record deleted', showConfirmButton: false, toast: true, timer: 3500});
+//                        this.recordsFetch();
+//                        return true;
+//                    }
+//
+//                    Swal.fire({position: 'top-end', icon: 'error', text: response.message, showConfirmButton: false, toast: true, timer: 3500});
+//                }).fail(() => {
+//                    Swal.fire({position: 'top-end', icon: 'error', text: 'Sorry there was an IO error', showConfirmButton: false, toast: true, timer: 3500});
+//                }).always(() => {
+//                    this.recordsLoading = false;
+//                });
+//            },
 
             /**
              * Fetches the record
@@ -446,7 +451,7 @@
 
                     Swal.fire({title: 'Error!', text: response.message, icon: 'error', heightAuto: false});
                 }).fail(() => {
-                    Swal.fire({title: 'Error!', text: "Sorry there was an IO error, please visit this page later", icon: 'error', heightAuto: false});
+                    Swal.fire({position: 'top-end', icon: 'error', text: 'Sorry there was an IO error', showConfirmButton: false, toast: true, timer: 3500});
                 }).always(() => {
                     this.recordsLoading = false;
                 });
