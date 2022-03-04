@@ -334,5 +334,29 @@ class TasksController extends \Illuminate\Routing\Controller {
 
         return json_encode(['status' => 'error', 'message' => 'Task faied to be requeued']);
     }
+    
+    function anyQueueTaskUpdateAjax() {
+        $queuedTaskId = trim(request('QueuedTaskId'));
+        $status = trim(request('Status'));
+        $queuedTask = \Sinevia\Tasks\Models\Queue::find($queuedTaskId);
+
+        if (is_null($queuedTask)) {
+            return json_encode(['status' => 'error', 'message' => 'Queued task not found']);
+        }
+
+        if ($status == "") {
+            return json_encode(['status' => 'error', 'message' => 'Status is required field']);
+        }
+        
+        $queuedTask->Status = $status;
+        
+        $isSuccess = $queuedTask->save();
+
+        if ($isSuccess) {
+            return json_encode(['status' => 'success', 'message' => 'Queued task saved']);
+        }
+
+        return json_encode(['status' => 'error', 'message' => 'Queued task faied to be saved']);
+    }
 
 }
